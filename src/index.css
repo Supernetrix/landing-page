@@ -199,13 +199,95 @@ body {
 }
 .testimonial-scroll { animation: slide-testimonial 30s linear infinite; }
 .testimonial-scroll:hover { animation-play-state: paused; }
+.client-signal-section {
+  position: relative;
+}
+.client-signal-card {
+  border-color: #e5e5e5;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.client-signal-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 5px;
+  background: var(--project-color);
+  opacity: 0.42;
+}
+.client-signal-card-surface {
+  background:
+    radial-gradient(circle at 84% 20%, color-mix(in srgb, var(--project-color), transparent 90%), transparent 35%),
+    linear-gradient(145deg, #fff 0%, #fff 60%, color-mix(in srgb, var(--project-color), transparent 95%) 100%);
+}
+.client-signal-card-number {
+  z-index: 0;
+  right: 1rem;
+  bottom: 0.75rem;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--project-color);
+  font-size: clamp(5rem, 10vw, 8rem);
+  font-weight: 900;
+  line-height: 0.8;
+  opacity: 0.12;
+}
+.client-signal-pill {
+  background: color-mix(in srgb, var(--project-color), transparent 90%);
+  color: var(--project-color);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--project-color), transparent 84%);
+}
+.client-signal-initial {
+  background: color-mix(in srgb, var(--project-color), transparent 88%);
+  color: var(--project-color);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--project-color), transparent 78%);
+}
+.client-signal-card:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--project-color), transparent 45%);
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.08);
+}
+
+@media (max-width: 767px) {
+  .client-signal-card {
+    min-height: 330px;
+  }
+  .client-signal-card-number {
+    top: 4.35rem;
+    right: 1.1rem;
+    bottom: auto;
+    font-size: 4.85rem;
+    opacity: 0.075;
+  }
+  .client-signal-pill {
+    max-width: calc(100% - 4rem);
+    line-height: 1.2;
+  }
+  .client-signal-quote-mark {
+    opacity: 0.65;
+  }
+  .client-signal-copy {
+    font-size: 1.02rem;
+    line-height: 1.68;
+    margin-bottom: 1.35rem;
+  }
+  .client-signal-footer {
+    padding-top: 1rem;
+  }
+  .client-signal-initial {
+    width: 2.35rem;
+    height: 2.35rem;
+    border-radius: 0.9rem;
+    background: color-mix(in srgb, var(--project-color), white 88%);
+  }
+}
 
 /* ─── FAQ ────────────────────────────────────── */
 .faq-answer {
   max-height: 0; overflow: hidden;
   transition: max-height 0.5s cubic-bezier(0.22, 1, 0.36, 1), padding 0.3s ease;
 }
-.faq-answer.open { max-height: 300px; }
+.faq-answer.open { max-height: 420px; }
 
 /* ─── TILT CARD ─────────────────────────────── */
 .tilt-card {
@@ -243,6 +325,91 @@ body {
 .line-reveal {
   clip-path: inset(0 100% 0 0);
   animation: line-reveal 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* ─── PROJECT CASE STUDY CARDS ─────────────── */
+.project-card {
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.project-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 5px;
+  background: var(--project-color);
+  opacity: 0.55;
+  transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.project-card-surface {
+  background:
+    radial-gradient(circle at 82% 18%, color-mix(in srgb, var(--project-color), transparent 88%), transparent 34%),
+    linear-gradient(145deg, #fff 0%, #fff 58%, color-mix(in srgb, var(--project-color), transparent 94%) 100%);
+}
+.project-card-number {
+  z-index: 0;
+  color: transparent;
+  -webkit-text-stroke: 1.2px var(--project-color);
+  font-size: clamp(6.5rem, 13vw, 10rem);
+  font-weight: 900;
+  line-height: 0.8;
+  opacity: 0.16;
+  transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.project-card-kicker {
+  background: color-mix(in srgb, var(--project-color), transparent 88%);
+  color: var(--project-color);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--project-color), transparent 84%);
+}
+.project-card:hover,
+.project-card-active {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--project-color), transparent 35%);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.09);
+}
+.project-card:hover::before,
+.project-card-active::before {
+  opacity: 0.9;
+}
+.project-card:hover .project-card-number,
+.project-card-active .project-card-number {
+  opacity: 0.24;
+  transform: translate(-6px, -4px);
+}
+.project-card-title,
+.project-card-link {
+  transition: color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.project-card:hover .project-card-link,
+.project-card-active .project-card-link {
+  color: var(--project-color);
+}
+.project-card:hover .project-card-arrow,
+.project-card-active .project-card-arrow {
+  transform: translate(4px, -4px);
+}
+
+@media (max-width: 767px) {
+  .project-card-number {
+    top: 4.5rem;
+    right: 1rem;
+    bottom: auto;
+    font-size: 5.75rem;
+    opacity: 0.08;
+    -webkit-text-stroke-width: 1px;
+  }
+  .project-card:hover,
+  .project-card-active {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.07);
+  }
+  .project-card:hover .project-card-number,
+  .project-card-active .project-card-number {
+    opacity: 0.13;
+    transform: translate(-3px, -2px);
+  }
 }
 
 /* ─── BENTO SERVICE CARDS ────────────────────── */
@@ -305,20 +472,58 @@ body {
 }
 .reveal-right.visible { opacity: 1; transform: translateX(0); }
 
-/* ─── PROCESS PULSE ────────────────────────── */
-@keyframes process-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 200, 83, 0.5); }
-  50% { box-shadow: 0 0 0 12px rgba(0, 200, 83, 0); }
+/* ─── SIMPLE PROCESS + STACK ───────────────── */
+.process-card {
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.process-pulse { animation: process-pulse 2s ease-in-out infinite; }
-
-/* ─── TECH GLOW CYCLE ──────────────────────── */
-@keyframes tech-glow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(0,200,83,0); border-color: #e5e5e5; }
-  50% { box-shadow: 0 0 20px 2px rgba(0,200,83,0.15); border-color: #00c853; }
+.process-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 5px;
+  background: var(--project-color);
+  opacity: 0.5;
 }
-.tech-glow-active {
-  animation: tech-glow 1.2s ease-in-out;
+.process-card-surface {
+  background:
+    radial-gradient(circle at 85% 20%, color-mix(in srgb, var(--project-color), transparent 90%), transparent 36%),
+    linear-gradient(145deg, #fff 0%, #fff 60%, color-mix(in srgb, var(--project-color), transparent 95%) 100%);
+}
+.process-card-number {
+  z-index: 0;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--project-color);
+  font-size: 5.25rem;
+  font-weight: 900;
+  line-height: 0.8;
+  opacity: 0.14;
+}
+.process-card-output {
+  background: color-mix(in srgb, var(--project-color), transparent 90%);
+  color: var(--project-color);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--project-color), transparent 84%);
+}
+.process-card:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--project-color), transparent 45%);
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.08);
+}
+.tech-quiet-panel {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+.tech-quiet-bg {
+  background:
+    linear-gradient(145deg, #fff 0%, #fff 62%, rgba(30, 75, 255, 0.045) 100%),
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.025) 0 1px, transparent 1px 8rem);
+}
+.tech-minimal-cell {
+  min-width: 0;
+}
+.tech-outcome-item {
+  text-align: center;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.65);
 }
 
 /* ─── SHIMMER (dark cards hover) ───────────── */
@@ -343,4 +548,25 @@ body {
 .fade-edges {
   -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
   mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+}
+
+@media (max-width: 767px) {
+  .fade-edges {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-mask-image: none;
+    mask-image: none;
+    scrollbar-width: none;
+  }
+  .fade-edges::-webkit-scrollbar {
+    display: none;
+  }
+  .testimonial-scroll {
+    animation: none;
+    will-change: auto;
+  }
+  .client-signal-card {
+    scroll-snap-align: center;
+  }
 }

@@ -1,4 +1,27 @@
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
+
+const BADRI_EMAIL = 'badri.supernetrix@gmail.com'
+const CORNELLEWS_EMAIL = 'cornellews.supernetrix@gmail.com'
+const START_PROJECT_MAILTO = `mailto:${BADRI_EMAIL}?subject=Project%20Inquiry%20-%20SuperNetrix`
+const INSTAGRAM_URL = 'https://www.instagram.com/supernetrix'
+const THREADS_URL = 'https://www.threads.com/@supernetrix'
+
+function InstagramIcon({ className = 'w-4 h-4' }: { className?: string }) {
+  return (
+    <svg className={className} fill="currentColor" viewBox="0 0 24 24">
+      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+    </svg>
+  )
+}
+
+function ThreadsIcon({ className = 'w-4 h-4' }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.2">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M16.7 8.1c-.7-3-2.8-4.6-6-4.6-4.2 0-7.1 3.3-7.1 8.5 0 5.3 3 8.5 7.4 8.5 3.8 0 6.4-2.2 6.4-5.1 0-2.6-2-4.2-5.3-4.2-2.6 0-4.2 1.1-4.2 2.8 0 1.5 1.2 2.5 3 2.5 2.5 0 4.2-1.9 4.2-4.8 0-2.7-1.6-4.4-4.3-4.4-1.3 0-2.5.4-3.4 1.1" />
+      <path strokeLinecap="round" d="M17.1 8.4c1.8.5 3.3 1.4 4.4 2.7" />
+    </svg>
+  )
+}
 
 /* ═══════════════════════ HOOKS ═══════════════════════ */
 function useReveal(cls = 'reveal-up', threshold = 0.15) {
@@ -104,13 +127,14 @@ function Navbar() {
   return (
     <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 ${scrolled ? 'bg-white/80 backdrop-blur-xl shadow-[0_1px_0_rgba(0,0,0,0.06)]' : 'bg-transparent'}`}>
       <div className="max-w-[1600px] mx-auto px-4 md:px-12 h-14 md:h-20 flex items-center justify-between">
-        <a href="#" className="text-lg font-bold tracking-tight text-[#0b0b0b]" style={{ fontFamily: 'Space Grotesk' }}>super<span className="text-[#00c853]">netrix</span>.io</a>
+        <a href="#" className="text-lg font-bold tracking-tight text-[#0b0b0b]" style={{ fontFamily: 'Space Grotesk' }}>super<span className="text-[#00c853]">netrix</span>.com</a>
         <div className="hidden lg:flex items-center gap-8">
           {links.map(l => <a key={l.h} href={l.h} className="text-[13px] font-medium text-[#666] hover:text-[#0b0b0b] transition-colors duration-300">{l.l}</a>)}
         </div>
         <div className="hidden lg:flex items-center gap-3">
-          <a href="https://www.linkedin.com/company/supernetrix" target="_blank" rel="noopener" className="w-9 h-9 rounded-full border border-[#e5e5e5] flex items-center justify-center text-[#888] hover:text-[#0b0b0b] hover:border-[#0b0b0b] transition-all"><svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
-          <a href="#contact" data-hover className="magnetic-btn text-[13px] font-semibold bg-[#0b0b0b] text-white px-5 py-2.5 rounded-full hover:bg-[#00c853] transition-all duration-300">Start Your Project</a>
+          <a href={INSTAGRAM_URL} target="_blank" rel="noopener" aria-label="SuperNetrix Instagram" className="w-9 h-9 rounded-full border border-[#e5e5e5] flex items-center justify-center text-[#888] hover:text-[#0b0b0b] hover:border-[#0b0b0b] transition-all"><InstagramIcon className="w-3.5 h-3.5" /></a>
+          <a href={THREADS_URL} target="_blank" rel="noopener" aria-label="SuperNetrix Threads" className="w-9 h-9 rounded-full border border-[#e5e5e5] flex items-center justify-center text-[#888] hover:text-[#0b0b0b] hover:border-[#0b0b0b] transition-all"><ThreadsIcon className="w-3.5 h-3.5" /></a>
+          <a href={START_PROJECT_MAILTO} data-hover className="magnetic-btn text-[13px] font-semibold bg-[#0b0b0b] text-white px-5 py-2.5 rounded-full hover:bg-[#00c853] transition-all duration-300">Start Your Project</a>
         </div>
         <button onClick={() => setOpen(!open)} className="lg:hidden flex flex-col gap-[5px] p-2 z-50">
           <span className={`block w-6 h-[2px] bg-[#0b0b0b] transition-all duration-300 ${open ? 'rotate-45 translate-y-[7px]' : ''}`} />
@@ -120,7 +144,7 @@ function Navbar() {
       </div>
       <div className={`lg:hidden fixed inset-0 bg-white z-40 transition-all duration-500 flex flex-col items-center justify-center gap-6 ${open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
         {links.map(l => <a key={l.h} href={l.h} onClick={() => setOpen(false)} className="text-2xl font-semibold text-[#0b0b0b] hover:text-[#00c853] transition-colors">{l.l}</a>)}
-        <a href="#contact" onClick={() => setOpen(false)} className="mt-4 text-base font-semibold bg-[#0b0b0b] text-white px-8 py-3 rounded-full">Start Your Project</a>
+        <a href={START_PROJECT_MAILTO} onClick={() => setOpen(false)} className="mt-4 text-base font-semibold bg-[#0b0b0b] text-white px-8 py-3 rounded-full">Start Your Project</a>
       </div>
     </nav>
   )
@@ -196,7 +220,7 @@ function Hero() {
 
         {/* CTA */}
         <div className={`flex flex-col sm:flex-row gap-4 justify-center items-center transition-all duration-1000 delay-[1800ms] ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          <a href="#contact" data-hover className="group inline-flex items-center gap-3 bg-[#0b0b0b] text-white font-semibold px-6 md:px-8 py-3.5 md:py-4 rounded-full hover:bg-[#00c853] transition-all duration-300 hover:shadow-[0_8px_30px_rgba(0,200,83,0.3)] text-sm md:text-[15px]">
+          <a href={START_PROJECT_MAILTO} data-hover className="group inline-flex items-center gap-3 bg-[#0b0b0b] text-white font-semibold px-6 md:px-8 py-3.5 md:py-4 rounded-full hover:bg-[#00c853] transition-all duration-300 hover:shadow-[0_8px_30px_rgba(0,200,83,0.3)] text-sm md:text-[15px]">
             Start Your Project
             <svg className="w-4 h-4 transition-transform group-hover:translate-x-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
           </a>
@@ -209,7 +233,7 @@ function Hero() {
         <div className={`mt-10 md:mt-16 flex flex-col items-center gap-3 transition-all duration-1000 delay-[2200ms] ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
           <span className="text-[11px] font-semibold text-[#bbb] uppercase tracking-[0.15em]">Trusted by Leaders</span>
           <div className="flex flex-wrap items-center justify-center gap-4 md:gap-10 text-[#0b0b0b]/20">
-            {['VoiceGuard AI', 'Cesari London', 'Future Sportler', 'Graphite'].map((name, i) => (
+            {['MoneyOS', 'Breyus', 'Di-Twin API', 'BuildSync'].map((name, i) => (
               <span key={i} className="text-[10px] md:text-sm font-bold tracking-wider uppercase whitespace-nowrap">{name}</span>
             ))}
           </div>
@@ -230,7 +254,7 @@ function Hero() {
 function ClientMarquee() {
   return (
     <div className="w-full border-y border-[#e5e5e5] bg-[#fafafa] py-5">
-      <Marquee items={['VOICEGUARD AI', 'CESARI LONDON', 'FUTURE SPORTLER', 'DIGITAL TWIN', 'GRAPHITE']}
+      <Marquee items={['MONEYOS', 'BREYUS', 'DI-TWIN API', 'BUILDSYNC', 'EVERKIND', 'GG KRISHI', 'SITESALES AI']}
         className="text-sm font-bold tracking-[0.2em] text-[#0b0b0b]/25 uppercase" />
     </div>
   )
@@ -370,11 +394,106 @@ function Projects() {
   const [modalProject, setModalProject] = useState<number | null>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
   const projects = [
-    { name: 'VoiceGuard AI', cat: 'AI / Call Analytics', desc: 'Smart call monitoring platform processing thousands of calls daily, extracting insights that improve sales performance. From zero to production in 8 weeks.', color: '#00c853', url: 'https://voiceguardai.co' },
-    { name: 'Cesari London', cat: 'Luxury E-Commerce', desc: 'Premium fashion e-commerce engineered for speed and conversion. A full digital storefront built for scale with immersive product experiences.', color: '#6366f1', url: 'https://cesarilondon.com' },
-    { name: 'Future Sportler', cat: 'Sports Platform', desc: 'Connecting athletes, coaches, and clubs. Real-time updates, massive concurrency, clean UX. Built to handle peak traffic.', color: '#f59e0b', url: 'https://futuresportler.com' },
-    { name: 'Digital Twin', cat: 'Enterprise Data Viz', desc: 'Complex datasets turned into actionable visual intelligence for enterprise decision-makers. Real-time dashboards at scale.', color: '#8b5cf6', url: 'https://dtwin.evenbetter.in' },
-    { name: 'Graphite', cat: 'B2B Collaboration', desc: 'Real-time sync, role-based access, clean API integrations. Built for teams that move fast. Reduced dev time by 60%.', color: '#ec4899', url: 'https://graphite.io' },
+    {
+      name: 'MoneyOS',
+      cat: 'Fintech App',
+      desc: 'Cross-platform finance operating system for accounts, transactions, budgets, loans, crypto, reports, and WhatsApp-based finance workflows.',
+      detail: 'MoneyOS is a private finance workspace built across mobile and web. The product foundation includes authenticated routing, account and transaction models, budgets, loans, crypto holdings, net-worth snapshots, notifications, recurring workflows, report generation, offline state, and Supabase-backed ownership rules.',
+      stack: ['Expo', 'Supabase', 'PostgreSQL'],
+      color: '#2563eb'
+    },
+    {
+      name: 'Breyus',
+      cat: 'B2B Trade Platform',
+      desc: 'AI-assisted commodity trading platform that connects sourcing, partner discovery, negotiation, documents, and admin operations.',
+      detail: 'Breyus brings multiple trade workflows into one platform: marketplace discovery, buyer/seller negotiation, deal lifecycle tracking, document handling, AI partner matching, KYC/admin operations, disputes, alerts, taxonomy management, and content publishing. The platform spans a buyer/seller app, admin portal, backend API, and AI service.',
+      stack: ['React', 'NestJS', 'FastAPI'],
+      color: '#7c3aed'
+    },
+    {
+      name: 'Di-Twin API',
+      cat: 'Health Platform',
+      desc: 'Nutrition backend that connects onboarding, wearable data, care plans, reminders, dashboards, and AI-generated routines.',
+      detail: 'Di-Twin API provides the backend contract for a nutrition workflow with client and nutritionist surfaces. It handles profile onboarding, referrals, appointments, versioned plans, notifications, Fitbit sync, dashboard snapshots, meal generation, exercise recommendations, and background jobs that keep reminders and wearable data outside the request path.',
+      stack: ['Node.js', 'PostgreSQL', 'BullMQ'],
+      color: '#0891b2'
+    },
+    {
+      name: 'BuildSync',
+      cat: 'Construction SaaS',
+      desc: 'Project collaboration platform for construction teams to manage documents, approvals, annotations, client chat, and phase timelines.',
+      detail: 'BuildSync is a construction collaboration workspace built around project isolation and a simple client experience. The product covers PDF/image document management, versioned review cycles, all-reviewer approval rules, Figma-style pinned comments, Slack-style channels, project phase tracking, timeline change logs, and mobile-friendly PWA access.',
+      stack: ['PWA', 'Real-time Chat', 'Approvals'],
+      color: '#d97706'
+    },
+    {
+      name: 'EverKind AI UGC',
+      cat: 'AI Content Pipeline',
+      desc: 'Internal AI UGC pipeline that turns trend inputs into persona-aware scripts, generated short-form videos, review queues, and social publishing flows.',
+      detail: 'EverKind is designed around a single loop: trending topic in, reviewed video out. The pipeline analyzes 7-10 reference videos, generates scripts with persona and product context, creates AI video variants, routes them through human review, and publishes to TikTok, Instagram, and Facebook with analytics tied back to the original trend and references.',
+      stack: ['Next.js', 'BullMQ', 'AI Video'],
+      color: '#c026d3'
+    },
+    {
+      name: 'GG Krishi',
+      cat: 'WhatsApp / MRV',
+      desc: 'WhatsApp-first verification system that validates field images with AI, routes edge cases to review, and supports automated farmer reward flows.',
+      detail: 'GG Krishi turns a WhatsApp chat into an auditable MRV workflow. Farmers submit images from the field, AI checks image quality and evidence, duplicate/suspicious cases move into review, and the admin portal tracks users, sessions, CRM follow-up, support tickets, analytics, and reward/payment status.',
+      stack: ['WhatsApp API', 'AI Vision', 'Admin CRM'],
+      color: '#f97316'
+    },
+    {
+      name: 'SiteSales AI',
+      cat: 'Construction Sales Intelligence',
+      desc: 'AI sales intelligence platform that analyzes site-visit calls, coaches agents, flags risky behavior, and tracks company mobile status.',
+      detail: 'SiteSales AI gives construction sales leaders a complete view of how agents handle prospects visiting house sites. The platform analyzes every sales call for confidence, objection handling, follow-up quality, closing ideas, and compliance risks, then turns the findings into admin-ready coaching notes, agent scorecards, and escalation signals. Because the phones are company-owned, the admin view also tracks agent availability, online status, mobile battery/charging state, and device health so operations can separate sales performance from field-availability issues.',
+      stack: ['AI Call QA', 'Agent Tracking', 'Device Telemetry'],
+      color: '#be123c'
+    },
+    {
+      name: 'PowerBlog',
+      cat: 'Publishing Platform',
+      desc: 'Multi-project publishing system that turns one CMS workflow into static, SEO-ready blogs, help centers, changelogs, and newsrooms.',
+      detail: 'PowerBlog pairs an internal CMS with a static public renderer. Editors can manage projects, authors, media, taxonomy, blogs, news, case studies, legal pages, help-center docs, changelogs, and roadmaps, while the build pipeline emits sitemap indexes, News sitemaps, llms.txt, IndexNow files, and search indexing outputs.',
+      stack: ['Next.js', 'Prisma', 'SEO'],
+      color: '#4f46e5',
+      url: 'https://getpowerblog.com'
+    },
+    {
+      name: 'Digital Twin',
+      cat: 'Enterprise Data Viz',
+      desc: 'Enterprise visualization system that turns complex operational data into real-time dashboards and decision-ready views.',
+      detail: 'Digital Twin converts complex datasets into operational visibility for decision-makers. The platform focuses on dashboard UX, real-time data presentation, scenario views, and a clean interface for teams that need to inspect system state without digging through raw tables.',
+      stack: ['Data Viz', 'Dashboards', 'Enterprise'],
+      color: '#0284c7',
+      url: 'https://dtwin.evenbetter.in'
+    },
+    {
+      name: 'VoiceGuard AI',
+      cat: 'AI / Call Analytics',
+      desc: 'AI call monitoring platform that reviews call quality, extracts sales insights, and turns daily conversations into operator-ready performance signals.',
+      detail: 'We built VoiceGuard AI as a production call-analytics workflow for teams that needed more than call recording. The system processes large call volumes, scores conversation quality, surfaces coaching signals, and gives operators a dashboard for review and follow-up.',
+      stack: ['AI Analysis', 'Dashboards', 'Call QA'],
+      color: '#475569',
+      url: 'https://voiceguardai.co'
+    },
+    {
+      name: 'ShelfSense',
+      cat: 'Retail Simulation',
+      desc: 'Assortment-planning workspace for testing SKU changes, delists, flowback, and scenario outcomes before shelf decisions go live.',
+      detail: 'ShelfSense gives category teams a planning workspace for assortment decisions. Users can review must-carry recommendations, edit SKU status or ACV, run simulations, save scenarios, export reports, and estimate flowback/margin impacts using Snowflake-backed data and model-driven simulation services.',
+      stack: ['Streamlit', 'FastAPI', 'Snowflake'],
+      color: '#9333ea'
+    },
+    {
+      name: 'Future Sportler',
+      cat: 'Sports Platform',
+      desc: 'Sports network for athletes, coaches, and clubs with real-time updates, clean discovery flows, and scalable community workflows.',
+      detail: 'Future Sportler focuses on connecting athletes, coaches, and clubs through a structured sports platform. The build emphasizes fast UX, user discovery, role-aware flows, real-time updates, and infrastructure that can handle traffic spikes around events and recruitment activity.',
+      stack: ['Web App', 'Real-time', 'Community'],
+      color: '#ea580c',
+      url: 'https://futuresportler.com'
+    },
   ]
 
   const scrollTo = useCallback((idx: number) => {
@@ -382,7 +501,8 @@ function Projects() {
     if (!el) return
     const card = el.children[idx] as HTMLElement
     if (card) {
-      el.scrollTo({ left: card.offsetLeft - 16, behavior: 'smooth' })
+      const centeredLeft = card.offsetLeft - ((el.clientWidth - card.clientWidth) / 2)
+      el.scrollTo({ left: Math.max(0, centeredLeft), behavior: 'smooth' })
       setActiveIdx(idx)
     }
   }, [])
@@ -403,9 +523,19 @@ function Projects() {
     const el = scrollRef.current
     if (!el) return
     const onScroll = () => {
-      const scrollLeft = el.scrollLeft
-      const cardWidth = (el.children[0] as HTMLElement)?.offsetWidth || 300
-      setActiveIdx(Math.round(scrollLeft / (cardWidth + 20)))
+      const cards = Array.from(el.children) as HTMLElement[]
+      const center = el.scrollLeft + el.clientWidth / 2
+      let nextIdx = 0
+      let nearest = Number.POSITIVE_INFINITY
+      cards.forEach((card, idx) => {
+        const cardCenter = card.offsetLeft + card.clientWidth / 2
+        const distance = Math.abs(cardCenter - center)
+        if (distance < nearest) {
+          nearest = distance
+          nextIdx = idx
+        }
+      })
+      setActiveIdx(nextIdx)
     }
     el.addEventListener('scroll', onScroll, { passive: true })
     return () => el.removeEventListener('scroll', onScroll)
@@ -414,7 +544,7 @@ function Projects() {
   return (
     <section id="work" className="max-w-[1600px] mx-auto px-4 md:px-12 py-16 md:py-20 bg-white">
       {/* Header with pagination */}
-      <div className="flex items-end justify-between mb-10 md:mb-14">
+      <div className="flex items-end justify-between gap-5 mb-8 md:mb-14">
         <div className="reveal-up" ref={useReveal()}>
           <span className="text-xs font-bold uppercase tracking-[0.15em] text-[#888] block mb-3">Our Work</span>
           <h2 className="text-[clamp(1.75rem,4vw,3.5rem)] font-extrabold tracking-tight text-[#0b0b0b]" style={{ fontFamily: 'Plus Jakarta Sans' }}>Featured Projects</h2>
@@ -433,33 +563,36 @@ function Projects() {
       </div>
 
       {/* Project cards — horizontal scroll */}
-      <div ref={scrollRef} className="flex gap-5 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide" style={{ scrollbarWidth: 'none' }}>
+      <div ref={scrollRef} className="flex gap-5 overflow-x-auto pt-3 pb-8 snap-x snap-mandatory scrollbar-hide" style={{ scrollbarWidth: 'none' }}>
         {projects.map((p, i) => (
           <div key={i} onClick={() => setModalProject(i)} data-hover
-            className="snap-start flex-shrink-0 w-[85vw] sm:w-[70vw] md:w-[540px] lg:w-[600px] rounded-2xl md:rounded-3xl border border-[#e5e5e5] overflow-hidden bg-white group hover:border-[#00c853]/50 transition-all duration-500 hover:shadow-[0_30px_80px_rgba(0,0,0,0.08)] cursor-pointer">
-            {/* Visual header */}
-            <div className="relative h-[200px] sm:h-[260px] md:h-[320px] overflow-hidden" style={{ background: `linear-gradient(135deg, ${p.color}12, ${p.color}05)` }}>
-              {/* Large letter watermark */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-[140px] sm:text-[180px] md:text-[220px] font-black leading-none opacity-[0.06] group-hover:opacity-[0.12] group-hover:scale-105 transition-all duration-700 select-none" style={{ color: p.color, fontFamily: 'Space Grotesk' }}>{p.name.charAt(0)}</span>
-              </div>
-              {/* Category badge */}
-              <div className="absolute top-5 left-5 px-3.5 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider backdrop-blur-md" style={{ background: p.color + '18', color: p.color }}>{p.cat}</div>
-              {/* Number */}
-              <div className="absolute bottom-4 right-5 text-[70px] md:text-[90px] font-black leading-none opacity-[0.04] select-none" style={{ fontFamily: 'Space Grotesk' }}>{String(i + 1).padStart(2, '0')}</div>
-              {/* Arrow on hover */}
-              <div className="absolute bottom-5 left-5 w-11 h-11 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-500 shadow-lg">
-                <svg className="w-4 h-4 text-[#0b0b0b] -rotate-45" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M12 5l7 7-7 7" /></svg>
-              </div>
+            style={{ '--project-color': p.color } as React.CSSProperties}
+            className={`project-card ${activeIdx === i ? 'project-card-active' : ''} snap-center flex-shrink-0 w-[calc(100vw-2rem)] sm:w-[70vw] md:w-[460px] lg:w-[500px] min-h-[430px] md:min-h-[410px] rounded-2xl md:rounded-3xl border border-[#e5e5e5] bg-white p-5 md:p-7 relative overflow-hidden cursor-pointer flex flex-col`}>
+            <div className="project-card-surface absolute inset-0 pointer-events-none" />
+            <div className="project-card-number absolute bottom-3 right-4 md:bottom-4 md:right-6 select-none" style={{ fontFamily: 'Space Grotesk' }}>{String(i + 1).padStart(2, '0')}</div>
+
+            <div className="relative z-10 flex items-start justify-between gap-4 mb-9">
+              <span className="project-card-kicker px-3.5 py-1.5 rounded-full text-[10px] md:text-[11px] font-bold uppercase tracking-wider">{p.cat}</span>
+              <span className="shrink-0 rounded-full border border-[#ececec] bg-white/80 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-[#999]">{p.url ? 'Public' : 'Private'}</span>
             </div>
-            {/* Info */}
-            <div className="p-5 md:p-7">
-              <h3 className="text-xl md:text-2xl font-bold text-[#0b0b0b] mb-2 group-hover:text-[#00c853] transition-colors" style={{ fontFamily: 'Plus Jakarta Sans' }}>{p.name}</h3>
-              <p className="text-sm text-[#666] leading-relaxed line-clamp-2">{p.desc}</p>
-              <span className="inline-flex items-center gap-1.5 mt-4 text-xs font-semibold text-[#888] group-hover:text-[#00c853] transition-colors">
-                View details
-                <svg className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-              </span>
+
+            <div className="relative z-10 flex-1 flex flex-col justify-between">
+              <div>
+                <h3 className="project-card-title text-[2.25rem] sm:text-[2.75rem] md:text-[3.5rem] font-black tracking-[-0.02em] leading-[0.95] text-[#0b0b0b] mb-6" style={{ fontFamily: 'Plus Jakarta Sans' }}>{p.name}</h3>
+                <p className="text-sm md:text-[15px] text-[#666] leading-relaxed max-w-[96%] md:max-w-[90%]">{p.desc}</p>
+              </div>
+
+              <div className="project-card-tags relative z-20 mt-8">
+                <div className="flex flex-wrap gap-2 mb-5">
+                  {p.stack.map((item) => (
+                    <span key={item} className="px-3 py-1.5 rounded-full bg-[#f5f5f5] text-[10px] font-bold uppercase tracking-wider text-[#666]">{item}</span>
+                  ))}
+                </div>
+                <span className="project-card-link inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#777]">
+                  View case study
+                  <svg className="project-card-arrow w-3.5 h-3.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M7 17L17 7M17 7H7M17 7v10" /></svg>
+                </span>
+              </div>
             </div>
           </div>
         ))}
@@ -468,7 +601,7 @@ function Projects() {
       {/* Progress dots */}
       <div className="flex items-center justify-center gap-2 mt-4">
         {projects.map((_, i) => (
-          <button key={i} onClick={() => scrollTo(i)} className={`h-1.5 rounded-full transition-all duration-300 ${activeIdx === i ? 'w-8 bg-[#00c853]' : 'w-1.5 bg-[#ddd]'}`} />
+          <button key={i} onClick={() => scrollTo(i)} style={activeIdx === i ? { backgroundColor: projects[i].color } : undefined} className={`h-1.5 rounded-full transition-all duration-300 ${activeIdx === i ? 'w-8' : 'w-1.5 bg-[#ddd]'}`} />
         ))}
       </div>
 
@@ -481,25 +614,36 @@ function Projects() {
             <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
             {/* Modal card */}
             <div className="relative z-10 w-full max-w-2xl bg-white rounded-3xl overflow-hidden shadow-2xl max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
-              {/* Visual header */}
-              <div className="relative h-[200px] md:h-[260px] overflow-hidden" style={{ background: `linear-gradient(135deg, ${p.color}20, ${p.color}08)` }}>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-[160px] md:text-[200px] font-black leading-none opacity-[0.08] select-none" style={{ color: p.color, fontFamily: 'Space Grotesk' }}>{p.name.charAt(0)}</span>
+              <div className="relative p-6 md:p-10 overflow-hidden border-b border-[#eee]" style={{ background: `linear-gradient(135deg, ${p.color}12, #fff 58%)` }}>
+                <div className="absolute top-6 right-16 text-[64px] md:text-[90px] font-black leading-none text-[#0b0b0b]/[0.04] select-none" style={{ fontFamily: 'Space Grotesk' }}>{String(modalProject + 1).padStart(2, '0')}</div>
+                <div className="relative z-10 mb-8 flex items-center gap-3">
+                  <span className="px-3.5 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider" style={{ background: p.color + '16', color: p.color }}>{p.cat}</span>
+                  <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#aaa]">{p.url ? 'Public' : 'Private'}</span>
                 </div>
-                <div className="absolute top-5 left-5 px-3.5 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider backdrop-blur-md" style={{ background: p.color + '18', color: p.color }}>{p.cat}</div>
-                {/* Close button */}
+                <h3 className="relative z-10 text-[clamp(2rem,6vw,4.5rem)] font-black tracking-[-0.02em] leading-[0.95] text-[#0b0b0b] max-w-xl" style={{ fontFamily: 'Plus Jakarta Sans' }}>{p.name}</h3>
+                <p className="relative z-10 text-[#666] text-sm md:text-base leading-relaxed max-w-xl mt-5">{p.desc}</p>
                 <button onClick={() => setModalProject(null)} className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center hover:bg-white transition-colors shadow-lg">
                   <svg className="w-5 h-5 text-[#0b0b0b]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
               </div>
               {/* Content */}
               <div className="p-6 md:p-10">
-                <h3 className="text-2xl md:text-3xl font-bold text-[#0b0b0b] mb-3" style={{ fontFamily: 'Plus Jakarta Sans' }}>{p.name}</h3>
-                <p className="text-[#666] text-sm md:text-base leading-relaxed mb-8">{p.desc}</p>
-                <a href={p.url} target="_blank" rel="noopener" data-hover className="inline-flex items-center gap-3 bg-[#0b0b0b] text-white font-semibold px-6 py-3.5 rounded-full hover:bg-[#00c853] transition-all duration-300 text-sm">
-                  Visit Website
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
-                </a>
+                <p className="text-[#666] text-sm md:text-base leading-relaxed mb-5">{p.detail}</p>
+                <div className="flex flex-wrap gap-2 mb-8">
+                  {p.stack.map((item) => (
+                    <span key={item} className="px-3 py-1.5 rounded-full bg-[#f4f4f4] text-[11px] font-bold uppercase tracking-wider text-[#666]">{item}</span>
+                  ))}
+                </div>
+                {p.url ? (
+                  <a href={p.url} target="_blank" rel="noopener" data-hover className="inline-flex items-center gap-3 bg-[#0b0b0b] text-white font-semibold px-6 py-3.5 rounded-full hover:bg-[#00c853] transition-all duration-300 text-sm">
+                    Visit Website
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                  </a>
+                ) : (
+                  <div className="inline-flex items-center gap-2 rounded-full border px-5 py-3 text-sm font-semibold" style={{ borderColor: p.color + '40', color: p.color }}>
+                    Private engagement
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -527,90 +671,57 @@ const techIcons: Record<string, JSX.Element> = {
 
 /* ═══════════════════════ TECH STACK ═══════════════════════ */
 function TechStack() {
-  const [hovered, setHovered] = useState<number | null>(null)
-  const [activeIdx, setActiveIdx] = useState(0)
-  const techs = [
-    { name: 'React', color: '#61dafb', desc: 'UI Library', tag: 'Frontend' },
-    { name: 'Node.js', color: '#339933', desc: 'Runtime', tag: 'Backend' },
-    { name: 'Next.js', color: '#0b0b0b', desc: 'Framework', tag: 'Full-Stack' },
-    { name: 'TypeScript', color: '#3178c6', desc: 'Language', tag: 'Type-Safe' },
-    { name: 'AWS', color: '#ff9900', desc: 'Cloud Infra', tag: 'Cloud' },
-    { name: 'MongoDB', color: '#47a248', desc: 'NoSQL DB', tag: 'Database' },
-    { name: 'Docker', color: '#2496ed', desc: 'Containers', tag: 'DevOps' },
-    { name: 'PostgreSQL', color: '#336791', desc: 'SQL DB', tag: 'Database' },
-    { name: 'Redis', color: '#dc382d', desc: 'In-Memory', tag: 'Caching' },
-    { name: 'Python', color: '#3776ab', desc: 'Language', tag: 'Backend' },
-    { name: 'Kubernetes', color: '#326ce5', desc: 'Orchestration', tag: 'DevOps' },
-    { name: 'GraphQL', color: '#e10098', desc: 'Query Lang', tag: 'API' },
+  const sectionRef = useReveal()
+  const toolsRef = useReveal('reveal-up', 0.08)
+  const tools = [
+    { name: 'React', color: '#61dafb' },
+    { name: 'Next.js', color: '#0b0b0b' },
+    { name: 'TypeScript', color: '#3178c6' },
+    { name: 'Node.js', color: '#339933' },
+    { name: 'Python', color: '#3776ab' },
+    { name: 'PostgreSQL', color: '#336791' },
+    { name: 'AWS', color: '#ff9900' },
+    { name: 'Docker', color: '#2496ed' },
   ]
-
-  const techBgs: Record<string, string> = {
-    React: 'repeating-linear-gradient(135deg, transparent 0px, transparent 8px, rgba(97,218,251,0.04) 8px, rgba(97,218,251,0.04) 16px)',
-    'Node.js': 'radial-gradient(circle at 30% 70%, rgba(51,153,51,0.08) 0%, transparent 60%)',
-    'Next.js': 'repeating-linear-gradient(90deg, transparent 0px, transparent 12px, rgba(11,11,11,0.03) 12px, rgba(11,11,11,0.03) 24px)',
-    TypeScript: 'linear-gradient(135deg, rgba(49,120,198,0.06) 0%, transparent 50%, rgba(49,120,198,0.04) 100%)',
-    AWS: 'radial-gradient(ellipse at 70% 30%, rgba(255,153,0,0.08) 0%, transparent 60%)',
-    MongoDB: 'repeating-conic-gradient(rgba(71,162,72,0.04) 0deg, transparent 30deg, transparent 60deg)',
-    Docker: 'repeating-linear-gradient(0deg, transparent 0px, transparent 10px, rgba(36,150,237,0.03) 10px, rgba(36,150,237,0.03) 20px)',
-    PostgreSQL: 'radial-gradient(circle at 50% 50%, rgba(51,103,145,0.08) 0%, transparent 70%)',
-    Redis: 'linear-gradient(45deg, rgba(220,56,45,0.05) 25%, transparent 25%, transparent 75%, rgba(220,56,45,0.05) 75%)',
-    Python: 'repeating-linear-gradient(45deg, rgba(55,118,171,0.04) 0px, rgba(55,118,171,0.04) 6px, transparent 6px, transparent 12px)',
-    Kubernetes: 'radial-gradient(circle at 50% 50%, rgba(50,108,229,0.06) 20%, transparent 60%)',
-    GraphQL: 'repeating-linear-gradient(-45deg, transparent 0px, transparent 8px, rgba(225,0,152,0.04) 8px, rgba(225,0,152,0.04) 16px)',
-  }
-
-  // Auto-rotate highlight every 2s
-  useEffect(() => {
-    if (hovered !== null) return
-    const interval = setInterval(() => {
-      setActiveIdx(prev => (prev + 1) % techs.length)
-    }, 2000)
-    return () => clearInterval(interval)
-  }, [hovered, techs.length])
+  const outcomes = ['Fast product surfaces', 'Clean handover', 'Reliable hosting']
 
   return (
-    <section className="max-w-[1600px] mx-auto px-4 md:px-12 py-20 md:py-28 bg-white relative overflow-hidden">
-      <div className="reveal-up mb-10 md:mb-16" ref={useReveal()}>
-        <span className="text-xs font-bold uppercase tracking-[0.15em] text-[#888] block mb-3">Our Stack</span>
-        <h2 className="text-[clamp(1.75rem,4vw,3rem)] font-extrabold tracking-tight text-[#0b0b0b]" style={{ fontFamily: 'Plus Jakarta Sans' }}>
-          Technology <span className="italic text-[#00c853]">We Work</span> with.
-        </h2>
-      </div>
+    <section className="max-w-[1600px] mx-auto px-4 md:px-12 py-14 md:py-20 bg-white">
+      <div className="tech-quiet-panel rounded-2xl md:rounded-[2rem] border border-[#e7e7e7] bg-white p-5 md:p-8 relative overflow-hidden">
+        <div className="tech-quiet-bg absolute inset-0 pointer-events-none" />
+        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-[0.85fr_1.35fr] gap-8 lg:gap-16 items-start">
+          <div className="reveal-up" ref={sectionRef}>
+            <span className="text-xs font-bold uppercase tracking-[0.15em] text-[#8a8a8a] block mb-3">Technology</span>
+            <h2 className="text-[clamp(1.8rem,3.5vw,3.1rem)] font-extrabold tracking-tight leading-[1.05] text-[#0b0b0b]" style={{ fontFamily: 'Plus Jakarta Sans' }}>
+              Familiar tools. Practical choices.
+            </h2>
+            <p className="text-[#666] text-sm md:text-base leading-relaxed max-w-xl mt-4">
+              Most clients do not need to think about frameworks. We choose proven tools, document the important parts, and keep the product easy to maintain after launch.
+            </p>
+          </div>
 
-      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2.5 md:gap-5">
-        {techs.map((t, i) => {
-          const ref = useReveal('reveal-scale', 0.05)
-          const isHovered = hovered === i
-          const isAutoActive = hovered === null && activeIdx === i
-          return (
-            <div key={i} ref={ref} data-hover
-              onMouseEnter={() => setHovered(i)} onMouseLeave={() => setHovered(null)}
-              className={`group relative rounded-xl md:rounded-2xl border bg-white p-3 md:p-6 flex flex-col items-center text-center transition-all duration-500 overflow-hidden ${isAutoActive ? 'border-[#00c853] shadow-[0_0_20px_2px_rgba(0,200,83,0.12)]' : 'border-[#e5e5e5]'} hover:border-transparent hover:shadow-[0_20px_60px_rgba(0,0,0,0.1)]`}>
-
-              {/* Colored glow background on hover */}
-              <div className={`absolute inset-0 transition-opacity duration-700 pointer-events-none ${isHovered || isAutoActive ? 'opacity-100' : 'opacity-0'}`} style={{ background: `radial-gradient(circle at 50% 40%, ${t.color}15, transparent 70%)` }} />
-              {/* Unique decorative pattern on hover */}
-              <div className={`absolute inset-0 transition-opacity duration-700 pointer-events-none ${isHovered || isAutoActive ? 'opacity-100' : 'opacity-0'}`} style={{ background: techBgs[t.name] || 'none' }} />
-
-              {/* Icon */}
-              <div className={`relative z-10 w-10 h-10 md:w-16 md:h-16 mb-2 md:mb-4 transition-all duration-500 ${isHovered || isAutoActive ? 'scale-110' : ''}`} style={{ color: t.color }}>
-                {techIcons[t.name]}
-              </div>
-
-              {/* Name */}
-              <h3 className="relative z-10 text-xs md:text-base font-bold text-[#0b0b0b] mb-0.5 transition-colors duration-300" style={{ fontFamily: 'Space Grotesk' }}>{t.name}</h3>
-
-              {/* Tag */}
-              <span className="relative z-10 text-[9px] md:text-[11px] font-semibold text-[#aaa] uppercase tracking-wider">{t.tag}</span>
-
-              {/* Desc - visible on hover/active */}
-              <span className={`relative z-10 text-[9px] md:text-[11px] font-semibold uppercase tracking-widest mt-1 transition-all duration-500 ${isHovered || isAutoActive ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`} style={{ color: t.color }}>{t.desc}</span>
-
-              {/* Bottom accent bar */}
-              <div className={`absolute bottom-0 left-1/2 -translate-x-1/2 h-[2px] md:h-[3px] transition-all duration-500 rounded-full ${isHovered || isAutoActive ? 'w-2/3' : 'w-0'}`} style={{ background: t.color }} />
+          <div className="reveal-up" ref={toolsRef}>
+            <div className="tech-minimal-grid grid grid-cols-2 sm:grid-cols-4 gap-px overflow-hidden rounded-2xl border border-[#e7e7e7] bg-[#e7e7e7]">
+              {tools.map((tool) => (
+                <div key={tool.name} className="tech-minimal-cell bg-white/95 p-5 md:p-6 min-h-[105px] flex flex-col justify-between">
+                  <span className="w-7 h-7 md:w-8 md:h-8" style={{ color: tool.color }}>
+                    {techIcons[tool.name]}
+                  </span>
+                  <span className="text-base md:text-lg font-black text-[#101010]" style={{ fontFamily: 'Space Grotesk' }}>
+                    {tool.name}
+                  </span>
+                </div>
+              ))}
             </div>
-          )
-        })}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mt-4">
+              {outcomes.map((item) => (
+                <div key={item} className="tech-outcome-item rounded-full border border-[#e7e7e7] bg-white px-4 py-3 text-xs font-bold text-[#444]">
+                  {item}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   )
@@ -620,14 +731,64 @@ function TechStack() {
 function Milestones() {
   const [openIdx, setOpenIdx] = useState<number | null>(0)
   const items = [
-    { year: '2026', title: 'Scaling to 25+ Active Clients', desc: 'Expanding the team and infrastructure to handle enterprise-grade concurrent partnerships. Building dedicated squads for each vertical.' },
-    { year: '2025', title: 'AI Division Launch', desc: 'Established a dedicated AI division focused on generative AI, LLM integration, and intelligent automation for enterprise clients.' },
-    { year: '2025', title: 'VoiceGuard AI — Built & Scaled', desc: 'AI call analytics platform processing thousands of calls daily, extracting insights that improve sales performance. From zero to production in 8 weeks.' },
-    { year: '2025', title: 'First Enterprise Client', desc: 'Signed our first enterprise-level partnership, proving that boutique engineering teams can deliver at scale without the overhead.' },
-    { year: '2025', title: '100% Client Retention Rate', desc: 'Every single client chose to continue working with us. That\'s the Masters at Work difference. We don\'t just deliver projects, we deliver outcomes.' },
-    { year: '2024', title: 'Team Growth to 10+', desc: 'Scaled the core team to over 10 engineers, designers, and strategists across multiple time zones. Remote-first, results-driven.' },
-    { year: '2024', title: 'SuperNetrix Founded', desc: 'Launched with a mission: engineer the outcome, not just the feature. Started with 3 founding engineers and a vision to build differently.' },
+    {
+      year: '2026',
+      title: 'Construction AI Systems',
+      status: 'Active build',
+      accent: '#38bdf8',
+      desc: 'Expanded construction work into practical operating platforms: BuildSync for project collaboration and SiteSales AI for call analysis, sales coaching, risk signals, and company-device visibility.',
+      projects: ['BuildSync', 'SiteSales AI'],
+    },
+    {
+      year: '2026',
+      title: 'WhatsApp MRV + Field Rewards',
+      status: 'Private platform',
+      accent: '#f97316',
+      desc: 'GG Krishi brought WhatsApp intake, AI image validation, carbon-audit support, farmer CRM, admin analytics, and reward/payment tracking into one field-ready workflow.',
+      projects: ['GG Krishi'],
+    },
+    {
+      year: '2025',
+      title: 'AI Content Operations',
+      status: 'Internal tooling',
+      accent: '#c026d3',
+      desc: 'EverKind AI UGC shaped a pipeline from trend intake to reference analysis, script generation, video creation, human review, publishing, and analytics.',
+      projects: ['EverKind AI UGC'],
+    },
+    {
+      year: '2025',
+      title: 'Finance + Trade Platforms',
+      status: 'Platform builds',
+      accent: '#7c3aed',
+      desc: 'MoneyOS and Breyus pushed the portfolio into fintech operating systems and B2B trade workflows with authenticated product surfaces, backend contracts, dashboards, and admin tools.',
+      projects: ['MoneyOS', 'Breyus'],
+    },
+    {
+      year: '2025',
+      title: 'Sales + Call Intelligence',
+      status: 'AI analytics',
+      accent: '#be123c',
+      desc: 'VoiceGuard AI established the call-analytics pattern; SiteSales AI extended that thinking into construction sales coaching, agent scorecards, and field-device context.',
+      projects: ['VoiceGuard AI', 'SiteSales AI'],
+    },
+    {
+      year: '2024',
+      title: 'Sports, Publishing, and Health Systems',
+      status: 'Product range',
+      accent: '#2563eb',
+      desc: 'Future Sportler, PowerBlog, and Di-Twin API added community flows, SEO publishing infrastructure, health-plan APIs, notifications, and wearable-data integrations.',
+      projects: ['Future Sportler', 'PowerBlog', 'Di-Twin API'],
+    },
+    {
+      year: '2024',
+      title: 'SuperNetrix Founded',
+      status: 'Foundation',
+      accent: '#00c853',
+      desc: 'Started as a small engineering team focused on shipping practical web, mobile, AI, and automation systems for startup and SME use cases.',
+      projects: ['SuperNetrix'],
+    },
   ]
+  const projectHighlights = ['MoneyOS', 'VoiceGuard AI', 'GG Krishi', 'EverKind AI UGC', 'BuildSync', 'SiteSales AI', 'Future Sportler']
   return (
     <section className="w-full bg-[#0b0b0b] py-20 md:py-28 px-4 md:px-12">
       <div className="max-w-[1600px] mx-auto">
@@ -641,6 +802,14 @@ function Milestones() {
             <h2 className="text-[clamp(2rem,4vw,3.5rem)] font-extrabold tracking-tight leading-[1.1] mt-1" style={{ fontFamily: 'Plus Jakarta Sans' }}>
               <span className="text-[#00c853]">& MILESTONES</span>
             </h2>
+            <p className="text-[#8aa0b5] text-sm md:text-base leading-relaxed max-w-md mt-6">
+              A realistic view of the portfolio: private systems, public products, AI workflows, construction tools, finance platforms, and content infrastructure.
+            </p>
+            <div className="flex flex-wrap gap-2 max-w-md mt-7">
+              {projectHighlights.map((name) => (
+                <span key={name} className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-[#b9cad8]">{name}</span>
+              ))}
+            </div>
           </div>
 
           {/* Right - expandable items */}
@@ -649,17 +818,25 @@ function Milestones() {
               const ref = useReveal('reveal-up', 0.1)
               const isOpen = openIdx === i
               return (
-                <div key={i} ref={ref} className="border-b border-[#222] group" data-hover>
+                <div key={i} ref={ref} className="border-b border-[#1f3547] group" data-hover>
                   <button onClick={() => setOpenIdx(isOpen ? null : i)} className="w-full flex items-start gap-3 md:gap-6 py-5 md:py-6 text-left">
                     <span className="text-sm font-bold text-[#555] shrink-0 pt-1 w-10 md:w-12" style={{ fontFamily: 'Space Grotesk' }}>{item.year}</span>
                     <div className="flex-1">
-                      <h3 className={`text-lg md:text-xl font-bold transition-colors duration-300 ${isOpen ? 'text-[#00c853]' : 'text-white group-hover:text-[#00c853]'}`} style={{ fontFamily: 'Plus Jakarta Sans' }}>{item.title}</h3>
+                      <span className="inline-flex mb-2 rounded-full border border-white/10 bg-white/[0.045] px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.16em] text-[#9fb4c7]">{item.status}</span>
+                      <h3 className={`text-lg md:text-xl font-bold transition-colors duration-300 ${isOpen ? 'text-white' : 'text-[#dce8f3] group-hover:text-white'}`} style={{ fontFamily: 'Plus Jakarta Sans' }}>{item.title}</h3>
                     </div>
-                    <span className={`text-[#00c853] text-xl shrink-0 transition-all duration-300 ${isOpen ? 'rotate-45 scale-110' : ''}`}>+</span>
+                    <span className={`text-xl shrink-0 text-[#00c853] transition-all duration-300 ${isOpen ? 'rotate-45 scale-110' : ''}`}>+</span>
                   </button>
                   <div className="grid transition-[grid-template-rows] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]" style={{ gridTemplateRows: isOpen ? '1fr' : '0fr' }}>
                     <div className="overflow-hidden min-h-0">
-                      <p className={`text-[#888] text-sm leading-relaxed pl-[52px] md:pl-[72px] pr-4 md:pr-8 transition-opacity duration-500 ${isOpen ? 'opacity-100 pb-6' : 'opacity-0'}`}>{item.desc}</p>
+                      <div className={`pl-[52px] md:pl-[72px] pr-4 md:pr-8 transition-opacity duration-500 ${isOpen ? 'opacity-100 pb-6' : 'opacity-0'}`}>
+                        <p className="text-[#8aa0b5] text-sm leading-relaxed">{item.desc}</p>
+                        <div className="flex flex-wrap gap-2 mt-4">
+                          {item.projects.map((project) => (
+                            <span key={project} className="rounded-full bg-white/[0.06] px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-[#d7e7f4]">{project}</span>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -796,64 +973,46 @@ function Services() {
 
 /* ═══════════════════════ PROCESS ═══════════════════════ */
 function Process() {
-  const [activeStep, setActiveStep] = useState(0)
   const steps = [
-    { n: '01', t: 'Discovery', d: 'Understand the business bottleneck and the metric to be moved.' },
-    { n: '02', t: 'Architecture', d: 'Design the fastest, most scalable path to the outcome.' },
-    { n: '03', t: 'Build', d: 'Rapid, production-grade execution. No shortcuts.' },
-    { n: '04', t: 'Deploy', d: 'Seamless rollouts with monitoring and stress-testing.' },
-    { n: '05', t: 'Scale', d: 'Continuous optimization. We help you grow post-launch.' },
+    { n: '01', t: 'Frame', d: 'Define the goal, users, scope, and constraints.', output: 'Scope map', accent: '#2563eb' },
+    { n: '02', t: 'Design', d: 'Shape the flows, screens, data, and integrations.', output: 'Build plan', accent: '#7c3aed' },
+    { n: '03', t: 'Build', d: 'Ship the product in tight, reviewable releases.', output: 'Working app', accent: '#0891b2' },
+    { n: '04', t: 'Launch', d: 'Deploy, test, monitor, and prepare handoff.', output: 'Live release', accent: '#d97706' },
+    { n: '05', t: 'Improve', d: 'Use real feedback to refine the product after launch.', output: 'Next roadmap', accent: '#0f766e' },
   ]
   const revealRef = useReveal()
+  const cardsRef = useReveal('reveal-up', 0.08)
   return (
     <section id="process" className="max-w-[1600px] mx-auto px-4 md:px-12 py-16 md:py-24 bg-white border-t border-[#e5e5e5]">
-      <div className="reveal-up mb-10 md:mb-14" ref={revealRef}>
-        <h2 className="text-[clamp(1.75rem,4vw,3rem)] font-extrabold tracking-tight text-[#0b0b0b]" style={{ fontFamily: 'Plus Jakarta Sans' }}>Our <span className="italic text-[#00c853]">Process</span></h2>
+      <div className="reveal-up mb-8 md:mb-10 flex flex-col md:flex-row md:items-end md:justify-between gap-4" ref={revealRef}>
+        <div>
+          <span className="text-xs font-bold uppercase tracking-[0.15em] text-[#888] block mb-3">How We Work</span>
+          <h2 className="text-[clamp(1.75rem,4vw,3rem)] font-extrabold tracking-tight text-[#0b0b0b]" style={{ fontFamily: 'Plus Jakarta Sans' }}>
+            From idea to release.
+          </h2>
+        </div>
+        <p className="text-[#666] text-sm md:text-base leading-relaxed max-w-lg">A simple process that keeps the work visible from day one.</p>
       </div>
 
-      {/* Desktop: Horizontal stepper */}
-      <div className="hidden md:block max-w-4xl mx-auto">
-        {/* Step dots + connecting line */}
-        <div className="relative flex items-center justify-between mb-12">
-          {/* Background line */}
-          <div className="absolute top-1/2 left-0 right-0 h-[2px] bg-[#e5e5e5] -translate-y-1/2" />
-          {/* Progress fill */}
-          <div className="absolute top-1/2 left-0 h-[2px] bg-[#00c853] -translate-y-1/2 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]" style={{ width: `${(activeStep / (steps.length - 1)) * 100}%` }} />
-          {/* Dots */}
-          {steps.map((s, i) => (
-            <button key={i} onClick={() => setActiveStep(i)} data-hover
-              className={`relative z-10 w-12 h-12 rounded-full border-2 flex items-center justify-center transition-all duration-500 ${i <= activeStep ? 'bg-[#00c853] border-[#00c853] text-white shadow-[0_0_16px_rgba(0,200,83,0.3)]' : 'bg-white border-[#e5e5e5] text-[#999] hover:border-[#00c853]'}`}>
-              <span className="text-xs font-bold" style={{ fontFamily: 'Space Grotesk' }}>{s.n}</span>
-            </button>
-          ))}
-        </div>
-
-        {/* Active step content */}
-        <div className="text-center p-8 md:p-12 rounded-2xl border border-[#e5e5e5] bg-[#fafafa] transition-all duration-500">
-          <span className="text-6xl md:text-7xl font-black text-[#00c853]/10 block mb-3" style={{ fontFamily: 'Space Grotesk' }}>{steps[activeStep].n}</span>
-          <h3 className="text-2xl md:text-3xl font-bold text-[#0b0b0b] mb-3" style={{ fontFamily: 'Plus Jakarta Sans' }}>{steps[activeStep].t}</h3>
-          <p className="text-[#888] text-sm md:text-base leading-relaxed max-w-lg mx-auto">{steps[activeStep].d}</p>
-        </div>
-      </div>
-
-      {/* Mobile: Vertical cards with green accent */}
-      <div className="md:hidden space-y-3">
-        {steps.map((s, i) => {
-          const ref = useReveal('reveal-up', 0.1)
-          return (
-            <div key={i} ref={ref} className="flex items-start gap-4 p-5 rounded-2xl border border-[#e5e5e5] relative overflow-hidden">
-              {/* Left green accent bar */}
-              <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#00c853] rounded-l-2xl" />
-              <div className="w-10 h-10 rounded-full bg-[#00c853] flex items-center justify-center shrink-0">
-                <span className="text-[10px] font-bold text-white" style={{ fontFamily: 'Space Grotesk' }}>{s.n}</span>
-              </div>
+      <div className="reveal-up grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4" ref={cardsRef}>
+        {steps.map((s) => (
+          <div key={s.n} data-hover style={{ '--project-color': s.accent } as React.CSSProperties}
+            className="process-card relative min-h-[230px] rounded-2xl border border-[#e5e5e5] bg-white p-5 overflow-hidden">
+            <div className="process-card-surface absolute inset-0 pointer-events-none" />
+            <span className="process-card-number absolute bottom-3 right-4 select-none" style={{ fontFamily: 'Space Grotesk' }}>{s.n}</span>
+            <div className="relative z-10 h-full flex flex-col justify-between">
               <div>
-                <h3 className="text-lg font-bold text-[#0b0b0b] mb-1" style={{ fontFamily: 'Plus Jakarta Sans' }}>{s.t}</h3>
-                <p className="text-sm text-[#888] leading-relaxed">{s.d}</p>
+                <span className="process-card-output inline-flex rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.14em]">{s.output}</span>
+                <h3 className="text-2xl lg:text-xl xl:text-2xl font-black text-[#0b0b0b] mt-8" style={{ fontFamily: 'Plus Jakarta Sans' }}>{s.t}</h3>
+                <p className="text-sm text-[#666] leading-relaxed mt-3">{s.d}</p>
               </div>
+              <span className="mt-8 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-[#777]">
+                Step {s.n}
+                <span className="h-px w-8 bg-[#d8d8d8]" />
+              </span>
             </div>
-          )
-        })}
+          </div>
+        ))}
       </div>
     </section>
   )
@@ -861,43 +1020,84 @@ function Process() {
 
 /* ═══════════════════════ TESTIMONIALS (Scrolling) ═══════════════════════ */
 function Testimonials() {
+  const scrollRef = useRef<HTMLDivElement>(null)
   const items = [
-    { quote: "SuperNetrix didn't just build our platform — they understood our business and engineered a system that directly impacted revenue. Unreal speed.", name: 'Cesari London', role: 'Luxury Fashion' },
-    { quote: "They think like co-founders, not contractors. Every decision tied to a business outcome. Moved faster than our internal team ever could.", name: 'Future Sportler', role: 'Sports Platform' },
-    { quote: "We needed an AI system handling thousands of calls. SuperNetrix architected VoiceGuard from scratch — and it just works. Flawlessly.", name: 'VoiceGuard AI', role: 'AI Analytics' },
-    { quote: "SuperNetrix challenges the myth that speed kills quality. Right architecture + speed = the ultimate advantage. They proved it.", name: 'Digital Twin', role: 'Enterprise Data' },
-    { quote: "From messy codebase to clean, scalable architecture in one sprint. Our AWS bill dropped 50%. That's engineering, not just coding.", name: 'Graphite', role: 'B2B Collaboration' },
+    { quote: "WhatsApp intake became a controlled verification workflow with image checks, review lanes, CRM follow-up, and admin visibility.", name: 'GG Krishi', role: 'MRV Platform', signal: 'AI image validation', accent: '#f97316' },
+    { quote: "Trend research, scripts, video generation, human review, publishing, and analytics moved into one operating pipeline.", name: 'EverKind', role: 'AI UGC Pipeline', signal: 'Content ops engine', accent: '#c026d3' },
+    { quote: "The trade workflow was mapped around sourcing, negotiation, documents, partner discovery, and admin control.", name: 'Breyus', role: 'B2B Trade Platform', signal: 'Multi-surface platform', accent: '#7c3aed' },
+    { quote: "Call recordings turned into reviewable coaching signals instead of staying as raw audio no one had time to inspect.", name: 'VoiceGuard AI', role: 'AI Analytics', signal: 'Call QA automation', accent: '#be123c' },
+    { quote: "Scattered content work moved into one CMS with static delivery, SEO outputs, and search-ready publishing flows.", name: 'PowerBlog', role: 'Publishing Platform', signal: 'SEO publishing system', accent: '#2563eb' },
+    { quote: "Construction collaboration became structured around documents, approvals, pinned comments, client chat, and phase timelines.", name: 'BuildSync', role: 'Construction SaaS', signal: 'Project ops portal', accent: '#d97706' },
   ]
+  const itemCount = items.length
+
+  useEffect(() => {
+    const scroller = scrollRef.current
+    if (!scroller) return
+    const scrollNext = () => {
+      if (window.innerWidth >= 768) return
+      const cards = Array.from(scroller.querySelectorAll<HTMLElement>('.client-signal-card'))
+      if (!cards.length) return
+      const center = scroller.scrollLeft + scroller.clientWidth / 2
+      let current = 0
+      let nearest = Number.POSITIVE_INFINITY
+      cards.slice(0, itemCount).forEach((card, idx) => {
+        const distance = Math.abs((card.offsetLeft + card.clientWidth / 2) - center)
+        if (distance < nearest) {
+          nearest = distance
+          current = idx
+        }
+      })
+      const next = current + 1
+      if (next >= itemCount) {
+        scroller.scrollTo({ left: 0, behavior: 'smooth' })
+        return
+      }
+      const card = cards[next]
+      const left = card.offsetLeft - ((scroller.clientWidth - card.clientWidth) / 2)
+      scroller.scrollTo({ left: Math.max(0, left), behavior: 'smooth' })
+    }
+    const interval = window.setInterval(scrollNext, 3600)
+    return () => window.clearInterval(interval)
+  }, [itemCount])
 
   return (
-    <section className="w-full py-16 md:py-24 bg-[#fafafa] border-y border-[#e5e5e5] overflow-hidden">
+    <section className="client-signal-section w-full py-16 md:py-24 bg-white border-y border-[#e5e8ef] overflow-hidden">
       <div className="max-w-[1600px] mx-auto px-4 md:px-12 mb-8 md:mb-12 relative">
-        {/* Decorative large quote mark */}
-        <div className="absolute -top-4 -left-2 md:left-6 text-[100px] md:text-[180px] font-black leading-none text-[#00c853]/[0.06] pointer-events-none select-none" style={{ fontFamily: 'Georgia, serif' }}>&ldquo;</div>
-        <div className="reveal-up relative z-10" ref={useReveal()}>
-          <h2 className="text-[clamp(1.75rem,4vw,3rem)] font-extrabold tracking-tight text-[#0b0b0b]" style={{ fontFamily: 'Plus Jakarta Sans' }}>
-            Trusted by <span className="italic text-[#00c853]">Clients</span>
-          </h2>
-          <p className="text-[#888] text-sm mt-2">Real feedback from real partnerships</p>
+        <div className="reveal-up relative z-10 flex flex-col md:flex-row md:items-end md:justify-between gap-5" ref={useReveal()}>
+          <div>
+            <span className="text-xs font-bold uppercase tracking-[0.15em] text-[#777] block mb-3">Client Signals</span>
+            <h2 className="text-[clamp(1.75rem,4vw,3rem)] font-extrabold tracking-tight text-[#0b0b0b]" style={{ fontFamily: 'Plus Jakarta Sans' }}>
+              Proof from <span className="italic text-[#1e4bff]">delivery</span>
+            </h2>
+          </div>
+          <div className="flex flex-wrap gap-2 md:justify-end">
+            {['Private systems', 'AI workflows', 'Ops platforms'].map((label) => (
+              <span key={label} className="rounded-full border border-[#dfe3ea] bg-white px-3.5 py-2 text-[10px] font-bold uppercase tracking-[0.14em] text-[#667085]">{label}</span>
+            ))}
+          </div>
         </div>
       </div>
 
       {/* Auto-scrolling testimonial strip with fade edges */}
-      <div className="overflow-hidden fade-edges">
+      <div ref={scrollRef} className="overflow-hidden fade-edges py-5">
         <div className="testimonial-scroll inline-flex gap-5 md:gap-8 px-6">
           {[...items, ...items].map((t, i) => (
-            <div key={i} data-hover className="flex-shrink-0 w-[280px] sm:w-[380px] md:w-[500px] rounded-2xl border border-[#e5e5e5] bg-white p-5 md:p-8 hover:border-[#00c853] transition-all duration-500 hover:shadow-[0_20px_50px_rgba(0,0,0,0.06)]">
-              {/* Stars */}
-              <div className="flex gap-1 mb-4">
-                {[...Array(5)].map((_, j) => <span key={j} className="text-[#00c853] text-sm">★</span>)}
+            <div key={i} data-hover className="client-signal-card flex-shrink-0 w-[calc(100vw-2rem)] sm:w-[390px] md:w-[500px] rounded-2xl md:rounded-3xl border bg-white p-5 md:p-7 relative overflow-hidden"
+              style={{ '--project-color': t.accent } as React.CSSProperties}>
+              <div className="client-signal-card-surface absolute inset-0 pointer-events-none" />
+              <div className="client-signal-card-number absolute select-none" style={{ fontFamily: 'Space Grotesk' }}>{String((i % items.length) + 1).padStart(2, '0')}</div>
+              <div className="relative z-10 flex items-start justify-between gap-4 mb-8">
+                <span className="client-signal-pill rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.16em]">{t.signal}</span>
+                <span className="client-signal-quote-mark text-[44px] md:text-[58px] leading-none font-black text-[#0b0b0b]/[0.04]" style={{ fontFamily: 'Georgia, serif' }}>&ldquo;</span>
               </div>
-              <p className="text-[#333] text-sm md:text-base leading-relaxed mb-6">"{t.quote}"</p>
-              <div className="flex items-center gap-3 border-t border-[#f0f0f0] pt-4">
-                <div className="w-9 h-9 md:w-11 md:h-11 rounded-full flex items-center justify-center text-white text-xs md:text-sm font-bold" style={{ background: 'linear-gradient(135deg, #00c853, #00e676)' }}>{t.name.charAt(0)}</div>
-                <div>
-                  <span className="text-sm md:text-base font-bold text-[#0b0b0b] block leading-tight">{t.name}</span>
-                  <span className="text-xs text-[#888]">{t.role}</span>
+              <p className="client-signal-copy relative z-10 text-[#24262d] text-base md:text-xl leading-relaxed mb-8 max-w-[96%]">{t.quote}</p>
+              <div className="client-signal-footer relative z-10 flex items-center justify-between gap-4 border-t border-[#edf0f4] pt-5">
+                <div className="min-w-0">
+                  <span className="text-base md:text-lg font-black text-[#0b0b0b] block leading-tight" style={{ fontFamily: 'Plus Jakarta Sans' }}>{t.name}</span>
+                  <span className="text-xs md:text-sm text-[#7b8494]">{t.role}</span>
                 </div>
+                <div className="client-signal-initial w-11 h-11 rounded-2xl flex items-center justify-center text-sm font-black shrink-0">{t.name.charAt(0)}</div>
               </div>
             </div>
           ))}
@@ -911,26 +1111,35 @@ function Testimonials() {
 function FAQ() {
   const [open, setOpen] = useState<number | null>(0)
   const faqs = [
-    { q: 'What is your typical project timeline?', a: 'Most high-impact applications ship within 4-8 weeks. Timeline varies by scope and complexity.' },
-    { q: 'Do you provide post-launch support?', a: 'Yes. Structured monthly partnerships for continuous development, monitoring, optimization, and feature iteration.' },
-    { q: 'What is your pricing model?', a: 'Project-based for defined scopes. Monthly retainers for ongoing work. Transparent from day one.' },
-    { q: 'What tech stack do you specialize in?', a: 'MERN stack with AWS. Also: Redis, Kafka, Docker, Kubernetes, PostgreSQL, TypeScript. Stack-agnostic when needed.' },
+    { cat: 'Timeline', q: 'What is your typical project timeline?', a: 'Most focused MVPs and internal tools ship within 4-8 weeks. Larger platforms, mobile apps, AI pipelines, or admin-heavy systems are planned in phases so you can start using the core product early.' },
+    { cat: 'Support', q: 'Do you provide post-launch support?', a: 'Yes. We can stay on as a monthly product and engineering partner for monitoring, fixes, optimization, feature iteration, analytics, hosting support, and roadmap planning.' },
+    { cat: 'Pricing', q: 'What is your pricing model?', a: 'We usually work project-based for defined scopes and monthly retainers for ongoing work. After discovery, we give a clear scope, timeline, payment structure, and what is included before development starts.' },
+    { cat: 'Ownership', q: 'Who owns the code and product after launch?', a: 'The client owns the product code and assets created for the engagement, unless a separate agreement says otherwise. We can hand over repositories, documentation, deployment notes, environment guidance, and admin access.' },
+    { cat: 'Confidentiality', q: 'Can you work on private or confidential projects?', a: 'Yes. Many of our projects are private or not publicly linkable. We can work under NDA, avoid public links, limit case study detail, and keep sensitive business logic, customer data, and internal workflows private.' },
+    { cat: 'Scope', q: 'Can you improve an existing product instead of building from scratch?', a: 'Yes. We can audit the current app, stabilize bugs, redesign weak flows, add AI or automation, improve performance, clean up architecture, or ship new modules on top of the existing codebase.' },
+    { cat: 'AI', q: 'Do you build real AI workflows or just chatbot wrappers?', a: 'We build both simple assistants and deeper AI systems: document workflows, image validation, call analysis, UGC pipelines, admin review queues, scoring logic, human-in-the-loop checks, and analytics around model outputs.' },
+    { cat: 'Team', q: 'How do we communicate during a project?', a: 'We keep communication practical: a clear project owner, weekly progress updates, async check-ins, demos at important milestones, and shared task visibility so you always know what is being built and what is blocked.' },
+    { cat: 'Launch', q: 'Can you handle hosting, deployment, and domain setup?', a: 'Yes. We can set up Vercel, cloud hosting, databases, storage, environment variables, CI/CD, monitoring, and launch checklists. If the deployment account is owned by you, we may need access or an invite.' },
+    { cat: 'Fit', q: 'What do you need from us to start?', a: 'A short product goal, target users, must-have workflows, examples of apps you like, any existing brand assets, and access to current code or tools if we are extending something. If details are unclear, we help shape the scope.' },
   ]
   return (
     <section id="faq" className="w-full bg-[#000] py-20 md:py-28 px-4 md:px-12">
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-4xl mx-auto">
         <div className="reveal-up mb-12" ref={useReveal()}>
           <h2 className="text-[clamp(2rem,4vw,3.5rem)] font-extrabold tracking-tight text-white mb-2" style={{ fontFamily: 'Plus Jakarta Sans' }}>FAQs</h2>
-          <p className="text-[#888] text-lg">Everything you need to <span className="text-[#00c853] font-semibold">know</span></p>
+          <p className="text-[#888] text-lg">Everything clients usually ask <span className="text-[#00c853] font-semibold">before we start</span></p>
         </div>
         {faqs.map((f, i) => (
           <div key={i} className="border-b border-[#222]">
-            <button onClick={() => setOpen(open === i ? null : i)} data-hover className="w-full flex items-center justify-between py-6 text-left group">
-              <h3 className="text-base md:text-lg font-semibold text-white pr-8 group-hover:text-[#00c853] transition-colors duration-300">{f.q}</h3>
+            <button onClick={() => setOpen(open === i ? null : i)} data-hover className="w-full flex items-start justify-between gap-4 py-6 text-left group">
+              <div className="pr-2">
+                <span className="inline-flex mb-2 rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.16em] text-[#7ea0bd]">{f.cat}</span>
+                <h3 className="text-base md:text-xl font-semibold text-white group-hover:text-[#00c853] transition-colors duration-300">{f.q}</h3>
+              </div>
               <span className={`text-[#00c853] transition-all duration-300 text-xl shrink-0 ${open === i ? 'rotate-45 scale-110' : ''}`}>+</span>
             </button>
             <div className={`faq-answer ${open === i ? 'open' : ''}`}>
-              <p className="text-[#888] text-sm leading-relaxed pb-6 pr-12">{f.a}</p>
+              <p className="text-[#8aa0b5] text-sm md:text-base leading-relaxed pb-6 pr-8 md:pr-14">{f.a}</p>
             </div>
           </div>
         ))}
@@ -970,7 +1179,7 @@ function CTA() {
 
           {/* Buttons */}
           <div className="reveal-up flex flex-col sm:flex-row gap-4 justify-center items-center" ref={useReveal()}>
-            <a href="mailto:hello@supernetrix.com" data-hover className="group inline-flex items-center gap-3 bg-[#c8ff00] text-[#0b0b0b] font-bold px-8 py-4 rounded-full hover:bg-[#d4ff33] transition-all duration-300 hover:shadow-[0_8px_30px_rgba(200,255,0,0.4)] text-sm uppercase tracking-wider">
+            <a href={START_PROJECT_MAILTO} data-hover className="group inline-flex items-center gap-3 bg-[#c8ff00] text-[#0b0b0b] font-bold px-8 py-4 rounded-full hover:bg-[#d4ff33] transition-all duration-300 hover:shadow-[0_8px_30px_rgba(200,255,0,0.4)] text-sm uppercase tracking-wider">
               Start A Project
               <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
             </a>
@@ -999,11 +1208,65 @@ function CTA() {
 
 /* ═══════════════════════ FOOTER ═══════════════════════ */
 function Footer() {
+  const legalDocs = {
+    privacy: {
+      title: 'Privacy Policy',
+      updated: 'Last updated: April 24, 2026',
+      intro: 'This Privacy Policy explains how SuperNetrix collects, uses, and protects information shared through this website and project inquiry channels.',
+      sections: [
+        { heading: 'Information We Collect', body: 'We may collect contact details, project notes, business requirements, and communication metadata when you email us or interact with our website.' },
+        { heading: 'How We Use Information', body: 'We use information to respond to inquiries, evaluate project fit, prepare proposals, coordinate delivery, improve our services, and maintain business records.' },
+        { heading: 'Sharing and Retention', body: 'We do not sell personal information. We may share limited information with service providers only when needed for hosting, communication, analytics, or project delivery. We retain information only as long as reasonably necessary.' },
+        { heading: 'Security', body: 'We use reasonable administrative, technical, and organizational safeguards to protect information, but no internet transmission or storage system can be guaranteed to be completely secure.' },
+        { heading: 'Contact', body: `For privacy questions, contact ${BADRI_EMAIL} or ${CORNELLEWS_EMAIL}.` },
+      ],
+    },
+    terms: {
+      title: 'Terms & Conditions',
+      updated: 'Last updated: April 24, 2026',
+      intro: 'These Terms describe the basic rules for using this website and starting conversations with SuperNetrix about potential projects.',
+      sections: [
+        { heading: 'Website Use', body: 'You may view and share public website content for informational purposes. You may not misuse the site, attempt unauthorized access, or interfere with its operation.' },
+        { heading: 'No Automatic Engagement', body: 'Contacting SuperNetrix does not create a client relationship, delivery obligation, exclusivity, or confidentiality commitment unless both parties sign a written agreement.' },
+        { heading: 'Project Work', body: 'Scope, pricing, timelines, ownership, confidentiality, and payment terms are handled through separate written proposals or agreements for each engagement.' },
+        { heading: 'Content Accuracy', body: 'We try to keep website content accurate, but case studies, services, availability, and descriptions may change over time. Content is provided as general information, not a guarantee of results.' },
+        { heading: 'Limitation of Liability', body: 'To the fullest extent permitted by law, SuperNetrix is not liable for indirect, incidental, special, or consequential damages arising from website use.' },
+      ],
+    },
+    conduct: {
+      title: 'Code of Conduct',
+      updated: 'Last updated: April 24, 2026',
+      intro: 'This Code of Conduct sets the collaboration standards we expect from SuperNetrix, clients, partners, and contributors.',
+      sections: [
+        { heading: 'Respectful Collaboration', body: 'We expect clear, professional, and respectful communication across email, calls, shared documents, and project channels.' },
+        { heading: 'Confidentiality Mindset', body: 'Project ideas, credentials, internal data, customer information, and business materials should be handled carefully and shared only with people who need access.' },
+        { heading: 'No Abuse or Harassment', body: 'Harassment, discrimination, threats, spam, abusive language, or attempts to pressure team members into unsafe work are not acceptable.' },
+        { heading: 'Responsible Technology', body: 'We do not support work intended for fraud, unlawful surveillance, unauthorized access, deceptive impersonation, or other harmful misuse.' },
+        { heading: 'Reporting Concerns', body: `Concerns can be raised directly through ${BADRI_EMAIL} or ${CORNELLEWS_EMAIL}.` },
+      ],
+    },
+  }
+  const [legalOpen, setLegalOpen] = useState<keyof typeof legalDocs | null>(null)
   const socials = [
-    { href: 'https://www.linkedin.com/company/supernetrix', icon: <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg> },
-    { href: 'https://www.instagram.com/supernetrix', icon: <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg> },
-    { href: 'https://x.com/supernetrix', icon: <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg> },
+    { href: INSTAGRAM_URL, label: 'Instagram', icon: <InstagramIcon /> },
+    { href: THREADS_URL, label: 'Threads', icon: <ThreadsIcon /> },
   ]
+  const legalLinks: Array<[keyof typeof legalDocs, string]> = [
+    ['privacy', 'Privacy Policy'],
+    ['terms', 'Terms & Conditions'],
+    ['conduct', 'Code of Conduct'],
+  ]
+
+  useEffect(() => {
+    if (!legalOpen) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setLegalOpen(null) }
+    document.body.style.overflow = 'hidden'
+    window.addEventListener('keydown', onKey)
+    return () => {
+      document.body.style.overflow = ''
+      window.removeEventListener('keydown', onKey)
+    }
+  }, [legalOpen])
 
   return (
     <footer className="w-full bg-[#fafafa] pt-12 md:pt-16 pb-8 px-3 md:px-8">
@@ -1013,11 +1276,14 @@ function Footer() {
         <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 mb-12 md:mb-16">
           <div>
             <span className="text-xs font-bold uppercase tracking-[0.15em] text-[#999] mb-3 block">Contacts</span>
-            <a href="mailto:hello@supernetrix.com" data-hover className="text-[#0b0b0b] text-xl md:text-3xl font-bold hover:text-[#00c853] transition-colors" style={{ fontFamily: 'Plus Jakarta Sans' }}>hello@supernetrix.com</a>
+            <div className="flex flex-col gap-2">
+              <a href={`mailto:${BADRI_EMAIL}`} data-hover className="text-[#0b0b0b] text-xl md:text-3xl font-bold hover:text-[#00c853] transition-colors" style={{ fontFamily: 'Plus Jakarta Sans' }}>{BADRI_EMAIL}</a>
+              <a href={`mailto:${CORNELLEWS_EMAIL}`} data-hover className="text-[#666] text-base md:text-xl font-semibold hover:text-[#00c853] transition-colors" style={{ fontFamily: 'Plus Jakarta Sans' }}>{CORNELLEWS_EMAIL}</a>
+            </div>
           </div>
           <div className="flex items-center gap-3">
             {socials.map((s, i) => (
-              <a key={i} href={s.href} target="_blank" rel="noopener" data-hover
+              <a key={i} href={s.href} target="_blank" rel="noopener" data-hover aria-label={s.label}
                 className="w-11 h-11 rounded-full bg-[#f0f0f0] flex items-center justify-center text-[#888] hover:text-white hover:bg-[#00c853] transition-all duration-300">
                 {s.icon}
               </a>
@@ -1049,8 +1315,8 @@ function Footer() {
           <div>
             <span className="text-xs font-bold uppercase tracking-[0.15em] text-[#999] mb-5 block">Legal</span>
             <nav className="flex flex-col gap-3">
-              {['Privacy Policy', 'Terms & Conditions', 'Code of Conduct'].map(label => (
-                <a key={label} href="#" data-hover className="text-sm font-medium text-[#444] hover:text-[#00c853] transition-colors inline-block w-fit">{label}</a>
+              {legalLinks.map(([key, label]) => (
+                <button key={key} type="button" onClick={() => setLegalOpen(key)} data-hover className="text-sm font-medium text-[#444] hover:text-[#00c853] transition-colors inline-block w-fit text-left">{label}</button>
               ))}
             </nav>
           </div>
@@ -1060,12 +1326,16 @@ function Footer() {
             <span className="text-xs font-bold uppercase tracking-[0.15em] text-[#999] mb-5 block">Inquiries</span>
             <div className="space-y-5">
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#bbb] block mb-1">General</span>
-                <a href="mailto:hello@supernetrix.com" data-hover className="text-sm font-medium text-[#444] hover:text-[#00c853] transition-colors inline-block w-fit">hello@supernetrix.com</a>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#bbb] block mb-1">Projects</span>
+                <a href={`mailto:${BADRI_EMAIL}`} data-hover className="text-sm font-medium text-[#444] hover:text-[#00c853] transition-colors inline-block w-fit">{BADRI_EMAIL}</a>
               </div>
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#bbb] block mb-1">Projects</span>
-                <a href="mailto:projects@supernetrix.com" data-hover className="text-sm font-medium text-[#444] hover:text-[#00c853] transition-colors inline-block w-fit">projects@supernetrix.com</a>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#bbb] block mb-1">Operations</span>
+                <a href={`mailto:${CORNELLEWS_EMAIL}`} data-hover className="text-sm font-medium text-[#444] hover:text-[#00c853] transition-colors inline-block w-fit">{CORNELLEWS_EMAIL}</a>
+              </div>
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#bbb] block mb-1">Instagram</span>
+                <a href={INSTAGRAM_URL} target="_blank" rel="noopener" data-hover className="text-sm font-medium text-[#444] hover:text-[#00c853] transition-colors inline-block w-fit">@supernetrix</a>
               </div>
             </div>
           </div>
@@ -1077,6 +1347,37 @@ function Footer() {
           <a href="#" data-hover className="text-xs text-[#aaa] hover:text-[#00c853] transition-colors">Back to Top ↑</a>
         </div>
       </div>
+
+      {legalOpen && (() => {
+        const doc = legalDocs[legalOpen]
+        return (
+          <div className="fixed inset-0 z-[300] flex items-center justify-center p-4" onClick={() => setLegalOpen(null)}>
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+            <div className="relative z-10 w-full max-w-3xl max-h-[88vh] overflow-y-auto rounded-3xl bg-white shadow-2xl" role="dialog" aria-modal="true" aria-labelledby={`legal-${legalOpen}-title`} onClick={e => e.stopPropagation()}>
+              <div className="sticky top-0 bg-white/90 backdrop-blur-xl border-b border-[#eee] px-6 md:px-8 py-5 flex items-start justify-between gap-4">
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853]">{doc.updated}</span>
+                  <h3 id={`legal-${legalOpen}-title`} className="text-2xl md:text-4xl font-black text-[#0b0b0b] mt-2" style={{ fontFamily: 'Plus Jakarta Sans' }}>{doc.title}</h3>
+                </div>
+                <button type="button" onClick={() => setLegalOpen(null)} className="w-10 h-10 rounded-full bg-[#f4f4f4] flex items-center justify-center hover:bg-[#0b0b0b] hover:text-white transition-colors shrink-0" aria-label="Close legal popup">
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+              </div>
+              <div className="px-6 md:px-8 py-7 md:py-8">
+                <p className="text-[#666] text-sm md:text-base leading-relaxed mb-8 max-w-2xl">{doc.intro}</p>
+                <div className="space-y-6">
+                  {doc.sections.map(section => (
+                    <section key={section.heading} className="border-l-2 border-[#00c853] pl-4">
+                      <h4 className="text-base md:text-lg font-bold text-[#0b0b0b] mb-2" style={{ fontFamily: 'Plus Jakarta Sans' }}>{section.heading}</h4>
+                      <p className="text-sm text-[#666] leading-relaxed">{section.body}</p>
+                    </section>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+      })()}
     </footer>
   )
 }
