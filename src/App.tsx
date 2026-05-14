@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { SpeedInsights } from '@vercel/speed-insights/react'
 
 const BADRI_EMAIL = 'badri.supernetrix@gmail.com'
 const CORNELLEWS_EMAIL = 'cornellews.supernetrix@gmail.com'
@@ -1403,6 +1404,7 @@ function App() {
       <FAQ />
       <CTA />
       <Footer />
+      <SpeedInsights />
     </div>
   )
 }
