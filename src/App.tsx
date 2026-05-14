@@ -24,6 +24,10 @@ function ThreadsIcon({ className = 'w-4 h-4' }: { className?: string }) {
   )
 }
 
+function BrandMark({ className = 'h-4 w-4' }: { className?: string }) {
+  return <img src="/supernetrix-mark.png" alt="" aria-hidden="true" className={`${className} object-contain`} />
+}
+
 /* ═══════════════════════ HOOKS ═══════════════════════ */
 function useReveal(cls = 'reveal-up', threshold = 0.15) {
   const ref = useRef<HTMLDivElement>(null)
@@ -123,31 +127,126 @@ function WordReveal({ children, className = '' }: { children: string, className?
 function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
-  useEffect(() => { const fn = () => setScrolled(window.scrollY > 60); window.addEventListener('scroll', fn); return () => window.removeEventListener('scroll', fn) }, [])
+  const menuButtonRef = useRef<HTMLButtonElement>(null)
+  const closeMenu = useCallback(() => setOpen(false), [])
+  const toggleMenu = useCallback(() => setOpen(v => !v), [])
+
+  useEffect(() => {
+    const fn = () => setScrolled(window.scrollY > 60)
+    fn()
+    window.addEventListener('scroll', fn, { passive: true })
+    return () => window.removeEventListener('scroll', fn)
+  }, [])
+
+  useEffect(() => {
+    if (!open) return
+
+    const previousBodyOverflow = document.body.style.overflow
+    const previousOverscroll = document.documentElement.style.overscrollBehavior
+
+    document.body.style.overflow = 'hidden'
+    document.documentElement.style.overscrollBehavior = 'contain'
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        closeMenu()
+        requestAnimationFrame(() => menuButtonRef.current?.focus())
+      }
+    }
+    const onResize = () => {
+      if (window.innerWidth >= 1024) closeMenu()
+    }
+    const onHashChange = () => closeMenu()
+
+    window.addEventListener('keydown', onKeyDown)
+    window.addEventListener('resize', onResize)
+    window.addEventListener('hashchange', onHashChange)
+
+    return () => {
+      document.body.style.overflow = previousBodyOverflow
+      document.documentElement.style.overscrollBehavior = previousOverscroll
+      window.removeEventListener('keydown', onKeyDown)
+      window.removeEventListener('resize', onResize)
+      window.removeEventListener('hashchange', onHashChange)
+    }
+  }, [open, closeMenu])
+
   const links = [{ l: 'About', h: '#about' }, { l: 'Services', h: '#services' }, { l: 'Work', h: '#work' }, { l: 'Process', h: '#process' }, { l: 'FAQ', h: '#faq' }, { l: 'Contact', h: '#contact' }]
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 ${scrolled ? 'bg-white/80 backdrop-blur-xl shadow-[0_1px_0_rgba(0,0,0,0.06)]' : 'bg-transparent'}`}>
-      <div className="max-w-[1600px] mx-auto px-4 md:px-12 h-14 md:h-20 flex items-center justify-between">
-        <a href="#" className="text-lg font-bold tracking-tight text-[#0b0b0b]" style={{ fontFamily: 'Space Grotesk' }}>super<span className="text-[#00c853]">netrix</span>.com</a>
-        <div className="hidden lg:flex items-center gap-8">
-          {links.map(l => <a key={l.h} href={l.h} className="text-[13px] font-medium text-[#666] hover:text-[#0b0b0b] transition-colors duration-300">{l.l}</a>)}
+    <>
+      <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 ${scrolled || open ? 'bg-white/90 backdrop-blur-xl shadow-[0_1px_0_rgba(0,0,0,0.06)]' : 'bg-transparent'}`}>
+        <div className="relative z-[140] max-w-[1600px] mx-auto px-4 md:px-12 h-14 md:h-20 flex items-center justify-between">
+          <a href="#" onClick={closeMenu} className="flex items-center gap-2 text-lg font-bold tracking-tight text-[#0b0b0b]" style={{ fontFamily: 'Space Grotesk' }}>
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-[#e9edf2] bg-white">
+              <BrandMark className="h-[17px] w-[17px]" />
+            </span>
+            <span>super<span className="text-[#00c853]">netrix</span>.com</span>
+          </a>
+          <div className="hidden lg:flex items-center gap-8">
+            {links.map(l => <a key={l.h} href={l.h} className="text-[13px] font-medium text-[#666] hover:text-[#0b0b0b] transition-colors duration-300">{l.l}</a>)}
+          </div>
+          <div className="hidden lg:flex items-center gap-3">
+            <a href={INSTAGRAM_URL} target="_blank" rel="noopener" aria-label="SuperNetrix Instagram" className="w-9 h-9 rounded-full border border-[#e5e5e5] flex items-center justify-center text-[#888] hover:text-[#0b0b0b] hover:border-[#0b0b0b] transition-all"><InstagramIcon className="w-3.5 h-3.5" /></a>
+            <a href={THREADS_URL} target="_blank" rel="noopener" aria-label="SuperNetrix Threads" className="w-9 h-9 rounded-full border border-[#e5e5e5] flex items-center justify-center text-[#888] hover:text-[#0b0b0b] hover:border-[#0b0b0b] transition-all"><ThreadsIcon className="w-3.5 h-3.5" /></a>
+            <a href={START_PROJECT_MAILTO} data-hover className="magnetic-btn text-[13px] font-semibold bg-[#0b0b0b] text-white px-5 py-2.5 rounded-full hover:bg-[#00c853] transition-all duration-300">Start Your Project</a>
+          </div>
+          <button
+            ref={menuButtonRef}
+            type="button"
+            aria-label={open ? 'Close menu' : 'Open menu'}
+            aria-controls="mobile-menu"
+            aria-expanded={open}
+            onClick={toggleMenu}
+            className="mobile-menu-button lg:hidden relative flex h-11 w-11 items-center justify-center rounded-full border border-transparent transition-colors duration-300 hover:border-[#e5e5e5]"
+          >
+            <span className="flex flex-col gap-[5px]">
+            <span className={`block w-6 h-[2px] bg-[#0b0b0b] transition-all duration-300 ${open ? 'rotate-45 translate-y-[7px]' : ''}`} />
+            <span className={`block w-6 h-[2px] bg-[#0b0b0b] transition-all duration-300 ${open ? 'opacity-0' : ''}`} />
+            <span className={`block w-6 h-[2px] bg-[#0b0b0b] transition-all duration-300 ${open ? '-rotate-45 -translate-y-[7px]' : ''}`} />
+            </span>
+          </button>
         </div>
-        <div className="hidden lg:flex items-center gap-3">
-          <a href={INSTAGRAM_URL} target="_blank" rel="noopener" aria-label="SuperNetrix Instagram" className="w-9 h-9 rounded-full border border-[#e5e5e5] flex items-center justify-center text-[#888] hover:text-[#0b0b0b] hover:border-[#0b0b0b] transition-all"><InstagramIcon className="w-3.5 h-3.5" /></a>
-          <a href={THREADS_URL} target="_blank" rel="noopener" aria-label="SuperNetrix Threads" className="w-9 h-9 rounded-full border border-[#e5e5e5] flex items-center justify-center text-[#888] hover:text-[#0b0b0b] hover:border-[#0b0b0b] transition-all"><ThreadsIcon className="w-3.5 h-3.5" /></a>
-          <a href={START_PROJECT_MAILTO} data-hover className="magnetic-btn text-[13px] font-semibold bg-[#0b0b0b] text-white px-5 py-2.5 rounded-full hover:bg-[#00c853] transition-all duration-300">Start Your Project</a>
+      </nav>
+      <div
+        id="mobile-menu"
+        aria-hidden={!open}
+        onClick={closeMenu}
+        className={`lg:hidden fixed inset-x-0 bottom-0 top-14 md:top-20 z-[90] bg-[#0b0b0b]/20 backdrop-blur-[2px] transition-opacity duration-300 ${open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+      >
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Mobile navigation"
+          onClick={(event) => event.stopPropagation()}
+          className={`mobile-menu-panel absolute left-3 right-3 top-3 overflow-hidden rounded-[1.75rem] border border-[#e5e5e5] bg-white shadow-[0_24px_70px_rgba(11,11,11,0.14)] transition-all duration-300 ${open ? 'translate-y-0 scale-100 opacity-100' : '-translate-y-3 scale-[0.98] opacity-0'}`}
+        >
+          <div className="px-5 py-5">
+            <div className="mb-4 flex items-center justify-between border-b border-[#eeeeee] pb-4">
+              <span className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#9ca3af]">Navigation</span>
+              <span className="h-2 w-2 rounded-full bg-[#00c853]" />
+            </div>
+            <div className="flex flex-col">
+              {links.map((l, index) => (
+                <a
+                  key={l.h}
+                  href={l.h}
+                  onClick={closeMenu}
+                  className="group flex items-center justify-between border-b border-[#eeeeee] py-4 text-[#0b0b0b] transition-colors active:text-[#00a844]"
+                >
+                  <span className="text-[1.65rem] font-black leading-none tracking-[-0.03em]" style={{ fontFamily: 'Plus Jakarta Sans' }}>{l.l}</span>
+                  <span className="text-xs font-bold text-[#a3a3a3] transition-colors group-active:text-[#00a844]">{String(index + 1).padStart(2, '0')}</span>
+                </a>
+              ))}
+            </div>
+            <div className="mt-5 grid grid-cols-[1fr_auto_auto] items-center gap-2">
+              <a href={START_PROJECT_MAILTO} onClick={closeMenu} className="inline-flex h-12 items-center justify-center rounded-full bg-[#0b0b0b] px-5 text-sm font-bold text-white transition-colors active:bg-[#00a844]">Start Your Project</a>
+              <a href={INSTAGRAM_URL} target="_blank" rel="noopener" onClick={closeMenu} aria-label="SuperNetrix Instagram" className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-[#e5e5e5] text-[#0b0b0b]"><InstagramIcon className="h-4 w-4" /></a>
+              <a href={THREADS_URL} target="_blank" rel="noopener" onClick={closeMenu} aria-label="SuperNetrix Threads" className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-[#e5e5e5] text-[#0b0b0b]"><ThreadsIcon className="h-4 w-4" /></a>
+            </div>
+          </div>
         </div>
-        <button onClick={() => setOpen(!open)} className="lg:hidden flex flex-col gap-[5px] p-2 z-50">
-          <span className={`block w-6 h-[2px] bg-[#0b0b0b] transition-all duration-300 ${open ? 'rotate-45 translate-y-[7px]' : ''}`} />
-          <span className={`block w-6 h-[2px] bg-[#0b0b0b] transition-all duration-300 ${open ? 'opacity-0' : ''}`} />
-          <span className={`block w-6 h-[2px] bg-[#0b0b0b] transition-all duration-300 ${open ? '-rotate-45 -translate-y-[7px]' : ''}`} />
-        </button>
       </div>
-      <div className={`lg:hidden fixed inset-0 bg-white z-40 transition-all duration-500 flex flex-col items-center justify-center gap-6 ${open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
-        {links.map(l => <a key={l.h} href={l.h} onClick={() => setOpen(false)} className="text-2xl font-semibold text-[#0b0b0b] hover:text-[#00c853] transition-colors">{l.l}</a>)}
-        <a href={START_PROJECT_MAILTO} onClick={() => setOpen(false)} className="mt-4 text-base font-semibold bg-[#0b0b0b] text-white px-8 py-3 rounded-full">Start Your Project</a>
-      </div>
-    </nav>
+    </>
   )
 }
 
@@ -194,20 +293,20 @@ function Hero() {
         {/* Badge */}
         <div className={`inline-flex items-center gap-2 px-4 md:px-5 py-2 md:py-2.5 rounded-full border border-[#e5e5e5] bg-white/70 backdrop-blur-sm mb-8 md:mb-12 transition-all duration-700 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
           <span className="w-2 h-2 rounded-full bg-[#00c853] pulse-dot shrink-0" />
-          <span className="text-[10px] md:text-[11px] font-semibold text-[#666] uppercase tracking-[0.1em] md:tracking-[0.15em]">Available for Projects &mdash; 2 Spots Left</span>
+          <span className="text-[10px] md:text-[11px] font-semibold text-[#666] uppercase tracking-[0.1em] md:tracking-[0.15em]">Now booking new builds</span>
         </div>
 
         {/* Heading with BLUR REVEAL effect */}
         {loaded && (
           <h1 className="mb-6" style={{ fontFamily: 'Plus Jakarta Sans' }}>
             <span className="block text-[clamp(2.5rem,7vw,5.5rem)] font-extrabold leading-[1.02] tracking-[-0.02em] text-[#0b0b0b]">
-              <BlurRevealText delay={0.2}>Outcome Driven</BlurRevealText>
+              <BlurRevealText delay={0.2}>Software Development</BlurRevealText>
             </span>
             <span className="block text-[clamp(2.5rem,7vw,5.5rem)] font-extrabold leading-[1.02] tracking-[-0.02em] text-[#0b0b0b] mt-1">
-              <BlurRevealText delay={0.5}>Engineering for</BlurRevealText>
+              <BlurRevealText delay={0.5}>Agency for</BlurRevealText>
             </span>
             <span className="block text-[clamp(2.5rem,7vw,5.5rem)] font-extrabold leading-[1.02] tracking-[-0.02em] mt-1">
-              <BlurRevealText delay={0.8} className="text-[#00c853]">Solid Startups</BlurRevealText>
+              <BlurRevealText delay={0.8} className="text-[#00c853]">SaaS, AI & Apps</BlurRevealText>
             </span>
           </h1>
         )}
@@ -215,7 +314,7 @@ function Hero() {
         {/* Sub - also blur reveals */}
         {loaded && (
           <p className="text-[#666] text-base md:text-lg max-w-2xl mx-auto leading-relaxed mb-12">
-            <BlurRevealText delay={1.2}>We craft production-grade apps, AI systems, and scalable platforms that help startups and SMEs move faster and grow smarter.</BlurRevealText>
+            <BlurRevealText delay={1.2}>SuperNetrix designs and builds SaaS platforms, AI workflows, mobile apps, web apps, admin portals, and automation systems for startups and SMEs worldwide.</BlurRevealText>
           </p>
         )}
 
@@ -234,7 +333,7 @@ function Hero() {
         <div className={`mt-10 md:mt-16 flex flex-col items-center gap-3 transition-all duration-1000 delay-[2200ms] ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
           <span className="text-[11px] font-semibold text-[#bbb] uppercase tracking-[0.15em]">Trusted by Leaders</span>
           <div className="flex flex-wrap items-center justify-center gap-4 md:gap-10 text-[#0b0b0b]/20">
-            {['MoneyOS', 'Breyus', 'Di-Twin API', 'BuildSync'].map((name, i) => (
+            {['MoneyOS', 'Breyus', 'Di-Twin API', 'Onsite'].map((name, i) => (
               <span key={i} className="text-[10px] md:text-sm font-bold tracking-wider uppercase whitespace-nowrap">{name}</span>
             ))}
           </div>
@@ -255,7 +354,7 @@ function Hero() {
 function ClientMarquee() {
   return (
     <div className="w-full border-y border-[#e5e5e5] bg-[#fafafa] py-5">
-      <Marquee items={['MONEYOS', 'BREYUS', 'DI-TWIN API', 'BUILDSYNC', 'EVERKIND', 'GG KRISHI', 'SITESALES AI']}
+      <Marquee items={['MONEYOS', 'BREYUS', 'DI-TWIN API', 'ONSITE', 'EVERKIND', 'GG KRISHI', 'SITESALES AI']}
         className="text-sm font-bold tracking-[0.2em] text-[#0b0b0b]/25 uppercase" />
     </div>
   )
@@ -263,7 +362,7 @@ function ClientMarquee() {
 
 /* ═══════════════════════ ABOUT (sujalbuild.in style word-by-word reveal) ═══════════════════════ */
 function About() {
-  const text = "We're SuperNetrix, a strategic technology partner that ships. Every quarter, we build production-grade systems for clients, startups, and enterprises. We blend research, design, and engineering to turn ideas into impactful digital products that move metrics."
+  const text = "SuperNetrix designs and builds SaaS platforms, AI workflows, mobile apps, web apps, admin portals, and automation systems for startups and SMEs worldwide. We focus on practical product engineering: clear scopes, fast builds, usable admin tools, and software that survives real operations."
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -286,7 +385,7 @@ function About() {
   }, [])
 
   return (
-    <section id="about" className="max-w-[1600px] mx-auto px-4 md:px-12 py-16 md:py-28 bg-white">
+    <section id="about" className="max-w-[1600px] mx-auto px-4 md:px-12 pt-14 pb-6 md:pt-24 md:pb-8 bg-white">
       <div className="reveal-up" ref={useReveal()}>
         <h2 className="text-[clamp(2.5rem,5vw,4rem)] font-extrabold tracking-tight leading-[1.05] text-[#0b0b0b] mb-4" style={{ fontFamily: 'Plus Jakarta Sans' }}>
           MORE THAN <span className="italic text-[#00c853] relative">code<svg className="absolute -bottom-1 left-0 w-full" viewBox="0 0 100 6" fill="none"><path d="M0 5C25 1 75 1 100 5" stroke="#00c853" strokeWidth="2" strokeLinecap="round"/></svg></span>
@@ -311,21 +410,41 @@ function About() {
 function Stats() {
   const c1 = useCounter(25, 2000, '+'); const c2 = useCounter(100, 2000, '%'); const c3 = useCounter(5, 1500, '+'); const c4 = useCounter(10, 1500, 'x')
   const stats = [
-    { r: c1, label: 'Projects Shipped', icon: '🚀' },
-    { r: c2, label: 'Client Retention', icon: '🤝' },
-    { r: c3, label: 'Years Building', icon: '⚡' },
-    { r: c4, label: 'Faster Delivery', icon: '🏎️' },
+    { r: c1, label: 'Projects Shipped', note: 'Production systems, private platforms, and public launches.', n: '01', accent: '#2563eb' },
+    { r: c2, label: 'Client Retention', note: 'Long-running delivery relationships built on trust.', n: '02', accent: '#00a86b' },
+    { r: c3, label: 'Years Building', note: 'Hands-on product, AI, automation, and web engineering.', n: '03', accent: '#7c3aed' },
+    { r: c4, label: 'Faster Delivery', note: 'Lean planning, tight builds, and direct communication.', n: '04', accent: '#d97706' },
   ]
   return (
-    <section className="max-w-[1600px] mx-auto px-4 md:px-12 py-12 md:py-16 bg-white">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-        {stats.map((s, i) => (
-          <div key={i} className={`reveal-up group relative rounded-2xl border border-[#e5e5e5] p-4 md:p-8 hover:border-[#00c853] transition-all duration-500 overflow-hidden`} ref={useReveal()}>
-            <div className="absolute top-3 right-3 text-xl md:text-2xl opacity-20 group-hover:opacity-50 transition-opacity">{s.icon}</div>
-            <span ref={s.r.ref} className="text-3xl md:text-5xl font-extrabold text-[#0b0b0b] block mb-1 group-hover:text-[#00c853] transition-colors duration-300" style={{ fontFamily: 'Space Grotesk' }}>{s.r.display}</span>
-            <span className="text-[10px] md:text-xs font-semibold text-[#888] uppercase tracking-wider">{s.label}</span>
+    <section className="max-w-[1600px] mx-auto px-4 md:px-12 pt-0 pb-12 md:pt-0 md:pb-16 bg-white">
+      <div className="delivery-snapshot reveal-up rounded-2xl md:rounded-[2rem] border border-[#e7e7e7] bg-white overflow-hidden" ref={useReveal()}>
+        <div className="grid grid-cols-1 lg:grid-cols-[0.75fr_1.45fr]">
+          <div className="delivery-snapshot-intro p-5 md:p-8 lg:p-10 border-b lg:border-b-0 lg:border-r border-[#e7e7e7]">
+            <span className="text-xs font-bold uppercase tracking-[0.16em] text-[#888] block mb-4">Delivery Snapshot</span>
+            <h3 className="text-[clamp(1.75rem,3.4vw,3.1rem)] font-black tracking-tight leading-[1.02] text-[#0b0b0b]" style={{ fontFamily: 'Plus Jakarta Sans' }}>
+              Proof without the noise.
+            </h3>
+            <p className="text-sm md:text-base text-[#666] leading-relaxed mt-4 max-w-md">
+              A calmer view of the numbers that matter: shipped work, retained clients, and faster execution.
+            </p>
           </div>
-        ))}
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-[#e7e7e7]">
+            {stats.map((s) => (
+              <div key={s.n} data-hover className="metric-card relative min-h-[178px] md:min-h-[220px] bg-white p-5 md:p-6 overflow-hidden" style={{ '--metric-color': s.accent } as React.CSSProperties}>
+                <div className="metric-card-surface absolute inset-0 pointer-events-none" />
+                <span className="metric-card-number absolute bottom-2 right-3 select-none" style={{ fontFamily: 'Space Grotesk' }}>{s.n}</span>
+                <div className="relative z-10 h-full flex flex-col justify-between">
+                  <div>
+                    <span ref={s.r.ref} className="metric-value text-4xl md:text-5xl font-black text-[#0b0b0b] block leading-none" style={{ fontFamily: 'Space Grotesk' }}>{s.r.display}</span>
+                    <span className="text-[10px] md:text-xs font-bold text-[#7a7f87] uppercase tracking-[0.14em] block mt-4">{s.label}</span>
+                  </div>
+                  <p className="hidden md:block text-xs text-[#777] leading-relaxed pr-2">{s.note}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   )
@@ -393,7 +512,9 @@ function TripleMarquee() {
 function Projects() {
   const [activeIdx, setActiveIdx] = useState(0)
   const [modalProject, setModalProject] = useState<number | null>(null)
+  const [modalClosing, setModalClosing] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)
+  const modalCloseTimerRef = useRef<number | null>(null)
   const projects = [
     {
       name: 'MoneyOS',
@@ -420,12 +541,14 @@ function Projects() {
       color: '#0891b2'
     },
     {
-      name: 'BuildSync',
+      name: 'Onsite',
       cat: 'Construction SaaS',
       desc: 'Project collaboration platform for construction teams to manage documents, approvals, annotations, client chat, and phase timelines.',
-      detail: 'BuildSync is a construction collaboration workspace built around project isolation and a simple client experience. The product covers PDF/image document management, versioned review cycles, all-reviewer approval rules, Figma-style pinned comments, Slack-style channels, project phase tracking, timeline change logs, and mobile-friendly PWA access.',
+      detail: 'Onsite is a construction collaboration workspace built around project isolation and a simple client experience. The product covers PDF/image document management, versioned review cycles, all-reviewer approval rules, Figma-style pinned comments, Slack-style channels, project phase tracking, timeline change logs, and mobile-friendly PWA access.',
       stack: ['PWA', 'Real-time Chat', 'Approvals'],
-      color: '#d97706'
+      color: '#d97706',
+      url: 'https://heartfelt-dango-68d136.netlify.app/#',
+      previewImage: '/project-preview-onsite.png'
     },
     {
       name: 'EverKind AI UGC',
@@ -458,7 +581,8 @@ function Projects() {
       detail: 'PowerBlog pairs an internal CMS with a static public renderer. Editors can manage projects, authors, media, taxonomy, blogs, news, case studies, legal pages, help-center docs, changelogs, and roadmaps, while the build pipeline emits sitemap indexes, News sitemaps, llms.txt, IndexNow files, and search indexing outputs.',
       stack: ['Next.js', 'Prisma', 'SEO'],
       color: '#4f46e5',
-      url: 'https://getpowerblog.com'
+      url: 'https://getpowerblog.com',
+      previewImage: '/project-preview-powerblog.png'
     },
     {
       name: 'Digital Twin',
@@ -467,7 +591,8 @@ function Projects() {
       detail: 'Digital Twin converts complex datasets into operational visibility for decision-makers. The platform focuses on dashboard UX, real-time data presentation, scenario views, and a clean interface for teams that need to inspect system state without digging through raw tables.',
       stack: ['Data Viz', 'Dashboards', 'Enterprise'],
       color: '#0284c7',
-      url: 'https://dtwin.evenbetter.in'
+      url: 'https://dtwin-theta.vercel.app/',
+      previewImage: '/project-preview-digital-twin.png'
     },
     {
       name: 'VoiceGuard AI',
@@ -476,7 +601,8 @@ function Projects() {
       detail: 'We built VoiceGuard AI as a production call-analytics workflow for teams that needed more than call recording. The system processes large call volumes, scores conversation quality, surfaces coaching signals, and gives operators a dashboard for review and follow-up.',
       stack: ['AI Analysis', 'Dashboards', 'Call QA'],
       color: '#475569',
-      url: 'https://voiceguardai.co'
+      url: 'https://www.voiceguardai.com/',
+      previewImage: '/project-preview-voiceguard-ai.png'
     },
     {
       name: 'ShelfSense',
@@ -493,7 +619,8 @@ function Projects() {
       detail: 'Future Sportler focuses on connecting athletes, coaches, and clubs through a structured sports platform. The build emphasizes fast UX, user discovery, role-aware flows, real-time updates, and infrastructure that can handle traffic spikes around events and recruitment activity.',
       stack: ['Web App', 'Real-time', 'Community'],
       color: '#ea580c',
-      url: 'https://futuresportler.com'
+      url: 'https://futuresportler.com',
+      previewImage: '/project-preview-future-sportler.png'
     },
   ]
 
@@ -508,17 +635,40 @@ function Projects() {
     }
   }, [])
 
+  const openProjectModal = useCallback((idx: number) => {
+    if (modalCloseTimerRef.current) {
+      window.clearTimeout(modalCloseTimerRef.current)
+      modalCloseTimerRef.current = null
+    }
+    setModalClosing(false)
+    setModalProject(idx)
+  }, [])
+
+  const closeProjectModal = useCallback(() => {
+    if (modalCloseTimerRef.current) return
+    setModalClosing(true)
+    modalCloseTimerRef.current = window.setTimeout(() => {
+      setModalProject(null)
+      setModalClosing(false)
+      modalCloseTimerRef.current = null
+    }, 220)
+  }, [])
+
   // Modal: lock body scroll + ESC to close
   useEffect(() => {
     if (modalProject !== null) {
       document.body.style.overflow = 'hidden'
-      const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setModalProject(null) }
+      const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') closeProjectModal() }
       window.addEventListener('keydown', onKey)
       return () => { document.body.style.overflow = ''; window.removeEventListener('keydown', onKey) }
     } else {
       document.body.style.overflow = ''
     }
-  }, [modalProject])
+  }, [modalProject, closeProjectModal])
+
+  useEffect(() => () => {
+    if (modalCloseTimerRef.current) window.clearTimeout(modalCloseTimerRef.current)
+  }, [])
 
   useEffect(() => {
     const el = scrollRef.current
@@ -543,7 +693,7 @@ function Projects() {
   }, [])
 
   return (
-    <section id="work" className="max-w-[1600px] mx-auto px-4 md:px-12 py-16 md:py-20 bg-white">
+    <section id="work" data-nosnippet className="max-w-[1600px] mx-auto px-4 md:px-12 pt-10 pb-6 md:pt-16 md:pb-8 bg-white">
       {/* Header with pagination */}
       <div className="flex items-end justify-between gap-5 mb-8 md:mb-14">
         <div className="reveal-up" ref={useReveal()}>
@@ -566,7 +716,7 @@ function Projects() {
       {/* Project cards — horizontal scroll */}
       <div ref={scrollRef} className="flex gap-5 overflow-x-auto pt-3 pb-8 snap-x snap-mandatory scrollbar-hide" style={{ scrollbarWidth: 'none' }}>
         {projects.map((p, i) => (
-          <div key={i} onClick={() => setModalProject(i)} data-hover
+          <div key={i} onClick={() => openProjectModal(i)} data-hover
             style={{ '--project-color': p.color } as React.CSSProperties}
             className={`project-card ${activeIdx === i ? 'project-card-active' : ''} snap-center flex-shrink-0 w-[calc(100vw-2rem)] sm:w-[70vw] md:w-[460px] lg:w-[500px] min-h-[430px] md:min-h-[410px] rounded-2xl md:rounded-3xl border border-[#e5e5e5] bg-white p-5 md:p-7 relative overflow-hidden cursor-pointer flex flex-col`}>
             <div className="project-card-surface absolute inset-0 pointer-events-none" />
@@ -610,39 +760,91 @@ function Projects() {
       {modalProject !== null && (() => {
         const p = projects[modalProject]
         return (
-          <div className="fixed inset-0 z-[200] flex items-center justify-center p-4" onClick={() => setModalProject(null)}>
-            {/* Overlay */}
-            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
-            {/* Modal card */}
-            <div className="relative z-10 w-full max-w-2xl bg-white rounded-3xl overflow-hidden shadow-2xl max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
-              <div className="relative p-6 md:p-10 overflow-hidden border-b border-[#eee]" style={{ background: `linear-gradient(135deg, ${p.color}12, #fff 58%)` }}>
-                <div className="absolute top-6 right-16 text-[64px] md:text-[90px] font-black leading-none text-[#0b0b0b]/[0.04] select-none" style={{ fontFamily: 'Space Grotesk' }}>{String(modalProject + 1).padStart(2, '0')}</div>
-                <div className="relative z-10 mb-8 flex items-center gap-3">
-                  <span className="px-3.5 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider" style={{ background: p.color + '16', color: p.color }}>{p.cat}</span>
-                  <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#aaa]">{p.url ? 'Public' : 'Private'}</span>
+          <div className={`project-modal-overlay fixed inset-0 z-[200] flex items-start justify-center overflow-y-auto scrollbar-hide p-2 md:items-center md:overflow-hidden md:p-4 lg:p-6 ${modalClosing ? 'is-closing' : ''}`} onClick={closeProjectModal}>
+            <div className="project-modal-backdrop absolute inset-0 bg-black/55 backdrop-blur-md" />
+            <div className="project-modal-panel relative z-10 my-4 w-full overflow-hidden rounded-[1.5rem] border border-white/40 bg-white shadow-[0_34px_120px_rgba(0,0,0,0.34)] md:my-0 md:rounded-[2rem]" onClick={e => e.stopPropagation()}>
+              <button onClick={closeProjectModal} className="absolute right-4 top-4 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-[#e5e8ef] bg-white/90 text-[#0b0b0b] shadow-sm backdrop-blur-sm transition-colors hover:bg-[#0b0b0b] hover:text-white md:right-5 md:top-5" aria-label="Close project popup">
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+
+              <div className={`project-modal-grid grid grid-cols-1 ${p.url ? 'md:grid-cols-[0.9fr_1.1fr]' : 'md:grid-cols-[1fr_0.78fr]'}`}>
+                <div className="project-modal-info relative overflow-y-auto overflow-x-hidden scrollbar-hide px-5 py-6 md:px-7 md:py-7 lg:px-8 lg:py-8" style={{ background: `linear-gradient(135deg, ${p.color}10, #fff 56%)` }}>
+                  <div className="absolute right-7 top-16 hidden text-[96px] font-black leading-none text-[#0b0b0b]/[0.035] select-none md:block" style={{ fontFamily: 'Space Grotesk' }}>{String(modalProject + 1).padStart(2, '0')}</div>
+                  <div className="relative z-10 max-w-xl">
+                    <div className="mb-5 flex flex-wrap items-center gap-2.5 pr-12">
+                      <span className="rounded-full px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-wider" style={{ background: p.color + '16', color: p.color }}>{p.cat}</span>
+                      <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#9aa1ad]">{p.url ? 'Public' : 'Private'}</span>
+                    </div>
+                    <h3 className="text-[clamp(2.25rem,5vw,4.9rem)] font-black tracking-[-0.025em] leading-[0.92] text-[#0b0b0b]" style={{ fontFamily: 'Plus Jakarta Sans' }}>{p.name}</h3>
+                    <p className="mt-5 text-sm leading-relaxed text-[#555d6a] md:text-base">{p.desc}</p>
+                  </div>
+
+                  <div className="relative z-10 mt-6 rounded-2xl border border-[#e8ecf2] bg-white/78 p-4 backdrop-blur-sm md:mt-7 md:p-4 lg:p-5">
+                    <span className="mb-3 block text-[10px] font-black uppercase tracking-[0.16em] text-[#98a2b3]">Project overview</span>
+                    <p className="text-sm leading-relaxed text-[#555d6a] md:text-[15px]">{p.detail}</p>
+                  </div>
+
+                  <div className="relative z-10 mt-4 rounded-2xl border border-[#e8ecf2] bg-white/78 p-4 backdrop-blur-sm md:p-4 lg:p-5">
+                    <span className="mb-3 block text-[10px] font-black uppercase tracking-[0.16em] text-[#98a2b3]">Stack</span>
+                    <div className="mb-5 flex flex-wrap gap-2">
+                      {p.stack.map((item) => (
+                        <span key={item} className="rounded-full border border-[#edf0f4] bg-white px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-[#5f6673]">{item}</span>
+                      ))}
+                    </div>
+                    {p.url ? (
+                      <a href={p.url} target="_blank" rel="noopener" data-hover className="inline-flex w-full items-center justify-center gap-3 rounded-full bg-[#0b0b0b] px-5 py-3.5 text-sm font-semibold text-white transition-colors duration-300 hover:bg-[#00c853]">
+                        Open website
+                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                      </a>
+                    ) : (
+                      <div className="flex w-full items-center justify-center rounded-full border bg-white px-5 py-3 text-sm font-semibold" style={{ borderColor: p.color + '40', color: p.color }}>
+                        Private engagement
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <h3 className="relative z-10 text-[clamp(2rem,6vw,4.5rem)] font-black tracking-[-0.02em] leading-[0.95] text-[#0b0b0b] max-w-xl" style={{ fontFamily: 'Plus Jakarta Sans' }}>{p.name}</h3>
-                <p className="relative z-10 text-[#666] text-sm md:text-base leading-relaxed max-w-xl mt-5">{p.desc}</p>
-                <button onClick={() => setModalProject(null)} className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center hover:bg-white transition-colors shadow-lg">
-                  <svg className="w-5 h-5 text-[#0b0b0b]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-                </button>
-              </div>
-              {/* Content */}
-              <div className="p-6 md:p-10">
-                <p className="text-[#666] text-sm md:text-base leading-relaxed mb-5">{p.detail}</p>
-                <div className="flex flex-wrap gap-2 mb-8">
-                  {p.stack.map((item) => (
-                    <span key={item} className="px-3 py-1.5 rounded-full bg-[#f4f4f4] text-[11px] font-bold uppercase tracking-wider text-[#666]">{item}</span>
-                  ))}
-                </div>
+
                 {p.url ? (
-                  <a href={p.url} target="_blank" rel="noopener" data-hover className="inline-flex items-center gap-3 bg-[#0b0b0b] text-white font-semibold px-6 py-3.5 rounded-full hover:bg-[#00c853] transition-all duration-300 text-sm">
-                    Visit Website
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
-                  </a>
+                  <div className="project-preview-panel hidden min-h-full flex-col justify-between border-l border-[#e7ebf0] bg-[#f6f8fb] p-4 md:flex lg:p-5">
+                    <div className="mb-3 flex items-center justify-between gap-4 pr-12">
+                      <div>
+                        <span className="block text-[10px] font-black uppercase tracking-[0.18em] text-[#9aa1ad]">Live preview</span>
+                        <p className="mt-1 text-sm font-semibold text-[#0b0b0b]">{p.name} website</p>
+                      </div>
+                    </div>
+                    <div className="project-preview-shell flex-1 overflow-hidden rounded-[1.35rem] border border-[#dce3ec] bg-white shadow-[0_22px_70px_rgba(15,23,42,0.14)]">
+                      <div className="flex h-9 items-center gap-2 border-b border-[#e8edf3] bg-white px-4">
+                        <span className="h-2.5 w-2.5 rounded-full bg-[#ff6b6b]" />
+                        <span className="h-2.5 w-2.5 rounded-full bg-[#ffd166]" />
+                        <span className="h-2.5 w-2.5 rounded-full bg-[#06d6a0]" />
+                        <span className="ml-3 truncate rounded-full bg-[#f3f5f8] px-3 py-1 text-[11px] font-medium text-[#8a93a0]">{p.url.replace('https://', '')}</span>
+                      </div>
+                      {p.previewImage ? (
+                        <div
+                          role="img"
+                          aria-label={`${p.name} website preview`}
+                          className="project-preview-capture"
+                          style={{ backgroundImage: `url(${p.previewImage})` }}
+                        />
+                      ) : (
+                        <iframe
+                          key={p.url}
+                          src={p.url}
+                          title={`${p.name} live website preview`}
+                          loading="lazy"
+                          referrerPolicy="no-referrer-when-downgrade"
+                          sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+                          className="project-preview-frame h-full w-full border-0"
+                        />
+                      )}
+                    </div>
+                  </div>
                 ) : (
-                  <div className="inline-flex items-center gap-2 rounded-full border px-5 py-3 text-sm font-semibold" style={{ borderColor: p.color + '40', color: p.color }}>
-                    Private engagement
+                  <div className="hidden min-h-full flex-col justify-end border-l border-[#e7ebf0] bg-[#f7f8fa] p-7 md:flex">
+                    <span className="mb-4 block text-[10px] font-black uppercase tracking-[0.18em] text-[#9aa1ad]">Private delivery</span>
+                    <p className="max-w-sm text-2xl font-black leading-tight tracking-[-0.02em] text-[#0b0b0b]" style={{ fontFamily: 'Plus Jakarta Sans' }}>
+                      Work kept private for the client, shown here as a concise case note.
+                    </p>
                   </div>
                 )}
               </div>
@@ -687,7 +889,7 @@ function TechStack() {
   const outcomes = ['Fast product surfaces', 'Clean handover', 'Reliable hosting']
 
   return (
-    <section className="max-w-[1600px] mx-auto px-4 md:px-12 py-14 md:py-20 bg-white">
+    <section className="max-w-[1600px] mx-auto px-4 md:px-12 pt-4 pb-14 md:pt-8 md:pb-20 bg-white">
       <div className="tech-quiet-panel rounded-2xl md:rounded-[2rem] border border-[#e7e7e7] bg-white p-5 md:p-8 relative overflow-hidden">
         <div className="tech-quiet-bg absolute inset-0 pointer-events-none" />
         <div className="relative z-10 grid grid-cols-1 lg:grid-cols-[0.85fr_1.35fr] gap-8 lg:gap-16 items-start">
@@ -737,8 +939,8 @@ function Milestones() {
       title: 'Construction AI Systems',
       status: 'Active build',
       accent: '#38bdf8',
-      desc: 'Expanded construction work into practical operating platforms: BuildSync for project collaboration and SiteSales AI for call analysis, sales coaching, risk signals, and company-device visibility.',
-      projects: ['BuildSync', 'SiteSales AI'],
+      desc: 'Expanded construction work into practical operating platforms: Onsite for project collaboration and SiteSales AI for call analysis, sales coaching, risk signals, and company-device visibility.',
+      projects: ['Onsite', 'SiteSales AI'],
     },
     {
       year: '2026',
@@ -789,7 +991,7 @@ function Milestones() {
       projects: ['SuperNetrix'],
     },
   ]
-  const projectHighlights = ['MoneyOS', 'VoiceGuard AI', 'GG Krishi', 'EverKind AI UGC', 'BuildSync', 'SiteSales AI', 'Future Sportler']
+  const projectHighlights = ['MoneyOS', 'VoiceGuard AI', 'GG Krishi', 'EverKind AI UGC', 'Onsite', 'SiteSales AI', 'Future Sportler']
   return (
     <section className="w-full bg-[#0b0b0b] py-20 md:py-28 px-4 md:px-12">
       <div className="max-w-[1600px] mx-auto">
@@ -853,7 +1055,7 @@ function Milestones() {
 /* ═══════════════════════ SERVICES ═══════════════════════ */
 function Services() {
   return (
-    <section id="services" className="relative max-w-[1600px] mx-auto px-4 md:px-12 py-20 md:py-28 bg-white overflow-visible">
+    <section id="services" className="relative max-w-[1600px] mx-auto px-4 md:px-12 pt-14 pb-12 md:pt-24 md:pb-20 bg-white overflow-visible">
       {/* Giant "out of place" heading — overflows the container */}
       <div className="reveal-up mb-6" ref={useReveal()}>
         <span className="text-xs font-bold uppercase tracking-[0.15em] text-[#888] block mb-4">What We Do</span>
@@ -975,133 +1177,209 @@ function Services() {
 /* ═══════════════════════ PROCESS ═══════════════════════ */
 function Process() {
   const steps = [
-    { n: '01', t: 'Frame', d: 'Define the goal, users, scope, and constraints.', output: 'Scope map', accent: '#2563eb' },
-    { n: '02', t: 'Design', d: 'Shape the flows, screens, data, and integrations.', output: 'Build plan', accent: '#7c3aed' },
-    { n: '03', t: 'Build', d: 'Ship the product in tight, reviewable releases.', output: 'Working app', accent: '#0891b2' },
-    { n: '04', t: 'Launch', d: 'Deploy, test, monitor, and prepare handoff.', output: 'Live release', accent: '#d97706' },
-    { n: '05', t: 'Improve', d: 'Use real feedback to refine the product after launch.', output: 'Next roadmap', accent: '#0f766e' },
+    { n: '01', t: 'Frame', d: 'Set the goal, users, scope, constraints, and decisions that matter before design starts.', output: 'Scope map', accent: '#2563eb', x: 330, y: 38, mx: 80, my: 130 },
+    { n: '02', t: 'Design', d: 'Shape flows, screen states, data paths, and the build plan into something everyone can review.', output: 'Product map', accent: '#7c3aed', x: 760, y: 268, mx: 430, my: 142 },
+    { n: '03', t: 'Build', d: 'Ship working slices with real data paths, frequent demos, and visible progress instead of hidden sprints.', output: 'Working system', accent: '#0891b2', x: 1190, y: 38, mx: 775, my: 130 },
+    { n: '04', t: 'Launch', d: 'Deploy, test, monitor, and prepare the team to operate the product with confidence.', output: 'Live release', accent: '#d97706', x: 1620, y: 268, mx: 1120, my: 142 },
+    { n: '05', t: 'Improve', d: 'Use real usage, feedback, and operational signals to decide what gets sharper next.', output: 'Next roadmap', accent: '#0f766e', x: 2050, y: 38, mx: 1465, my: 130 },
   ]
-  const revealRef = useReveal()
-  const cardsRef = useReveal('reveal-up', 0.08)
-  return (
-    <section id="process" className="max-w-[1600px] mx-auto px-4 md:px-12 py-16 md:py-24 bg-white border-t border-[#e5e5e5]">
-      <div className="reveal-up mb-8 md:mb-10 flex flex-col md:flex-row md:items-end md:justify-between gap-4" ref={revealRef}>
-        <div>
-          <span className="text-xs font-bold uppercase tracking-[0.15em] text-[#888] block mb-3">How We Work</span>
-          <h2 className="text-[clamp(1.75rem,4vw,3rem)] font-extrabold tracking-tight text-[#0b0b0b]" style={{ fontFamily: 'Plus Jakarta Sans' }}>
-            From idea to release.
-          </h2>
-        </div>
-        <p className="text-[#666] text-sm md:text-base leading-relaxed max-w-lg">A simple process that keeps the work visible from day one.</p>
-      </div>
+  const sectionRef = useRef<HTMLElement>(null)
+  const viewportRef = useRef<HTMLDivElement>(null)
+  const trackRef = useRef<HTMLDivElement>(null)
+  const progressRef = useRef<HTMLDivElement>(null)
+  const [activeStep, setActiveStep] = useState(0)
 
-      <div className="reveal-up grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4" ref={cardsRef}>
-        {steps.map((s) => (
-          <div key={s.n} data-hover style={{ '--project-color': s.accent } as React.CSSProperties}
-            className="process-card relative min-h-[230px] rounded-2xl border border-[#e5e5e5] bg-white p-5 overflow-hidden">
-            <div className="process-card-surface absolute inset-0 pointer-events-none" />
-            <span className="process-card-number absolute bottom-3 right-4 select-none" style={{ fontFamily: 'Space Grotesk' }}>{s.n}</span>
-            <div className="relative z-10 h-full flex flex-col justify-between">
-              <div>
-                <span className="process-card-output inline-flex rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.14em]">{s.output}</span>
-                <h3 className="text-2xl lg:text-xl xl:text-2xl font-black text-[#0b0b0b] mt-8" style={{ fontFamily: 'Plus Jakarta Sans' }}>{s.t}</h3>
-                <p className="text-sm text-[#666] leading-relaxed mt-3">{s.d}</p>
+  useEffect(() => {
+    const section = sectionRef.current
+    const viewport = viewportRef.current
+    const track = trackRef.current
+    const progress = progressRef.current
+    if (!section || !viewport || !track || !progress) return
+
+    let raf = 0
+    let travel = 0
+    let targetRatio = 0
+    let currentRatio = 0
+    let lastStep = 0
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+
+    const clamp = (value: number) => Math.max(0, Math.min(1, value))
+
+    const syncTarget = () => {
+      const rect = section.getBoundingClientRect()
+      const total = Math.max(1, section.offsetHeight - window.innerHeight)
+      targetRatio = clamp(-rect.top / total)
+    }
+
+    const render = () => {
+      syncTarget()
+      const easing = reducedMotion.matches ? 1 : 0.14
+      currentRatio += (targetRatio - currentRatio) * easing
+      if (Math.abs(targetRatio - currentRatio) < 0.001) currentRatio = targetRatio
+
+      track.style.transform = `translate3d(${-travel * currentRatio}px, 0, 0)`
+      progress.style.transform = `scaleX(${currentRatio})`
+      section.style.setProperty('--process-ratio', currentRatio.toFixed(4))
+
+      const next = Math.min(steps.length - 1, Math.round(currentRatio * (steps.length - 1)))
+      if (next !== lastStep) {
+        lastStep = next
+        setActiveStep(next)
+      }
+
+      if (currentRatio !== targetRatio) {
+        raf = window.requestAnimationFrame(render)
+      } else {
+        raf = 0
+      }
+    }
+
+    const measure = () => {
+      travel = Math.max(0, track.scrollWidth - viewport.clientWidth)
+      const isMobile = viewport.clientWidth < 768
+      const scrollDistance = Math.max(
+        window.innerHeight * (isMobile ? 3.65 : 2.05),
+        travel * (isMobile ? 1.6 : 0.92),
+      )
+      section.style.setProperty('--process-flow-height', `${Math.round(window.innerHeight + scrollDistance)}px`)
+      syncTarget()
+      currentRatio = targetRatio
+      track.style.transform = `translate3d(${-travel * currentRatio}px, 0, 0)`
+      progress.style.transform = `scaleX(${currentRatio})`
+      section.style.setProperty('--process-ratio', currentRatio.toFixed(4))
+    }
+
+    const requestUpdate = () => {
+      if (!raf) raf = window.requestAnimationFrame(render)
+    }
+
+    const onResize = () => measure()
+    measure()
+    window.addEventListener('scroll', requestUpdate, { passive: true })
+    window.addEventListener('resize', onResize)
+    return () => {
+      if (raf) window.cancelAnimationFrame(raf)
+      window.removeEventListener('scroll', requestUpdate)
+      window.removeEventListener('resize', onResize)
+    }
+  }, [steps.length])
+
+  return (
+    <section id="process" ref={sectionRef} className="process-flow-section relative w-full border-y border-[#e5e8ef]">
+      <div className="process-flow-sticky">
+        <div className="process-flow-inner mx-auto max-w-[1600px] px-4 md:px-12">
+          <div className="process-flow-header">
+            <div>
+              <span className="mb-3 block text-xs font-bold uppercase tracking-[0.15em] text-[#888]">How We Work</span>
+              <h2 className="text-[clamp(2rem,4.8vw,4.2rem)] font-extrabold tracking-[-0.03em] leading-[0.96] text-[#0b0b0b]" style={{ fontFamily: 'Plus Jakarta Sans' }}>
+                From idea to release.
+              </h2>
+            </div>
+            <div className="process-flow-status">
+              <p>A five-step delivery flow, moved by normal page scroll.</p>
+              <div className="process-flow-progressbar">
+                <span>{steps[activeStep].n}</span>
+                <div>
+                  <i ref={progressRef} />
+                </div>
+                <strong>{steps[activeStep].output}</strong>
               </div>
-              <span className="mt-8 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-[#777]">
-                Step {s.n}
-                <span className="h-px w-8 bg-[#d8d8d8]" />
-              </span>
             </div>
           </div>
-        ))}
+
+          <div ref={viewportRef} className="process-flow-viewport">
+            <div ref={trackRef} className="process-flow-track">
+              <svg className="process-flow-svg" viewBox="0 0 2580 560" preserveAspectRatio="none" aria-hidden="true">
+                <path className="process-flow-path-base" d="M100 300 C260 126 430 134 560 254 C705 388 805 430 925 334 C1055 230 1100 122 1245 178 C1395 236 1420 408 1575 404 C1745 400 1790 160 1960 172 C2140 186 2225 302 2450 286" />
+                <path className="process-flow-path-progress" pathLength="1" d="M100 300 C260 126 430 134 560 254 C705 388 805 430 925 334 C1055 230 1100 122 1245 178 C1395 236 1420 408 1575 404 C1745 400 1790 160 1960 172 C2140 186 2225 302 2450 286" />
+              </svg>
+
+              <div className="process-flow-anchor process-flow-origin">
+                <span>Start</span>
+                <strong>Brief</strong>
+              </div>
+
+              {steps.map((s, idx) => (
+                <article
+                  key={s.n}
+                  data-hover
+                  style={{ '--project-color': s.accent, '--node-x': `${s.x}px`, '--node-y': `${s.y}px`, '--mobile-node-x': `${s.mx}px`, '--mobile-node-y': `${s.my}px` } as React.CSSProperties}
+                  className={`process-flow-node ${idx === activeStep ? 'is-active' : ''}`}
+                >
+                  <div className="process-flow-node-cap">
+                    <span>{s.n}</span>
+                    <i />
+                  </div>
+                  <div className="process-flow-node-body">
+                    <p>{s.output}</p>
+                    <h3>{s.t}</h3>
+                    <span>{s.d}</span>
+                  </div>
+                </article>
+              ))}
+
+              <div className="process-flow-anchor process-flow-finish">
+                <span>Release</span>
+                <strong>Operate</strong>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   )
 }
 
-/* ═══════════════════════ TESTIMONIALS (Scrolling) ═══════════════════════ */
+/* ═══════════════════════ SIGNAL LOG ═══════════════════════ */
 function Testimonials() {
-  const scrollRef = useRef<HTMLDivElement>(null)
+  const logIntroRef = useReveal()
+  const [expanded, setExpanded] = useState(false)
   const items = [
-    { quote: "WhatsApp intake became a controlled verification workflow with image checks, review lanes, CRM follow-up, and admin visibility.", name: 'GG Krishi', role: 'MRV Platform', signal: 'AI image validation', accent: '#f97316' },
-    { quote: "Trend research, scripts, video generation, human review, publishing, and analytics moved into one operating pipeline.", name: 'EverKind', role: 'AI UGC Pipeline', signal: 'Content ops engine', accent: '#c026d3' },
-    { quote: "The trade workflow was mapped around sourcing, negotiation, documents, partner discovery, and admin control.", name: 'Breyus', role: 'B2B Trade Platform', signal: 'Multi-surface platform', accent: '#7c3aed' },
-    { quote: "Call recordings turned into reviewable coaching signals instead of staying as raw audio no one had time to inspect.", name: 'VoiceGuard AI', role: 'AI Analytics', signal: 'Call QA automation', accent: '#be123c' },
-    { quote: "Scattered content work moved into one CMS with static delivery, SEO outputs, and search-ready publishing flows.", name: 'PowerBlog', role: 'Publishing Platform', signal: 'SEO publishing system', accent: '#2563eb' },
-    { quote: "Construction collaboration became structured around documents, approvals, pinned comments, client chat, and phase timelines.", name: 'BuildSync', role: 'Construction SaaS', signal: 'Project ops portal', accent: '#d97706' },
+    { quote: "WhatsApp intake became a controlled verification workflow with image checks, review lanes, CRM follow-up, and admin visibility.", name: 'GG Krishi', role: 'MRV Platform', signal: 'AI image validation', outcome: 'Field evidence to verified payout flow', accent: '#f97316' },
+    { quote: "Trend research, scripts, video generation, human review, publishing, and analytics moved into one operating pipeline.", name: 'EverKind', role: 'AI UGC Pipeline', signal: 'Content ops engine', outcome: 'Trend input to reviewed video output', accent: '#c026d3' },
+    { quote: "The trade workflow was mapped around sourcing, negotiation, documents, partner discovery, and admin control.", name: 'Breyus', role: 'B2B Trade Platform', signal: 'Multi-surface platform', outcome: 'Buyer, seller, admin, and AI surfaces', accent: '#7c3aed' },
+    { quote: "Call recordings turned into reviewable coaching signals instead of staying as raw audio no one had time to inspect.", name: 'VoiceGuard AI', role: 'AI Analytics', signal: 'Call QA automation', outcome: 'Raw calls to performance review queues', accent: '#be123c' },
+    { quote: "Scattered content work moved into one CMS with static delivery, SEO outputs, and search-ready publishing flows.", name: 'PowerBlog', role: 'Publishing Platform', signal: 'SEO publishing system', outcome: 'CMS workflow to static SEO delivery', accent: '#2563eb' },
+    { quote: "Construction collaboration became structured around documents, approvals, pinned comments, client chat, and phase timelines.", name: 'Onsite', role: 'Construction SaaS', signal: 'Project ops portal', outcome: 'Documents, approvals, and client updates', accent: '#d97706' },
   ]
-  const itemCount = items.length
-
-  useEffect(() => {
-    const scroller = scrollRef.current
-    if (!scroller) return
-    const scrollNext = () => {
-      if (window.innerWidth >= 768) return
-      const cards = Array.from(scroller.querySelectorAll<HTMLElement>('.client-signal-card'))
-      if (!cards.length) return
-      const center = scroller.scrollLeft + scroller.clientWidth / 2
-      let current = 0
-      let nearest = Number.POSITIVE_INFINITY
-      cards.slice(0, itemCount).forEach((card, idx) => {
-        const distance = Math.abs((card.offsetLeft + card.clientWidth / 2) - center)
-        if (distance < nearest) {
-          nearest = distance
-          current = idx
-        }
-      })
-      const next = current + 1
-      if (next >= itemCount) {
-        scroller.scrollTo({ left: 0, behavior: 'smooth' })
-        return
-      }
-      const card = cards[next]
-      const left = card.offsetLeft - ((scroller.clientWidth - card.clientWidth) / 2)
-      scroller.scrollTo({ left: Math.max(0, left), behavior: 'smooth' })
-    }
-    const interval = window.setInterval(scrollNext, 3600)
-    return () => window.clearInterval(interval)
-  }, [itemCount])
+  const visibleItems = expanded ? items : items.slice(0, 3)
+  const hiddenCount = items.length - visibleItems.length
 
   return (
-    <section className="client-signal-section w-full py-16 md:py-24 bg-white border-y border-[#e5e8ef] overflow-hidden">
-      <div className="max-w-[1600px] mx-auto px-4 md:px-12 mb-8 md:mb-12 relative">
-        <div className="reveal-up relative z-10 flex flex-col md:flex-row md:items-end md:justify-between gap-5" ref={useReveal()}>
+    <section className="outcome-ledger-section w-full py-10 md:py-16 bg-white border-y border-[#e5e8ef] overflow-hidden">
+      <div className="max-w-[1600px] mx-auto px-4 md:px-12">
+        <div className="outcome-ledger-header reveal-up" ref={logIntroRef}>
           <div>
-            <span className="text-xs font-bold uppercase tracking-[0.15em] text-[#777] block mb-3">Client Signals</span>
+            <span className="text-xs font-bold uppercase tracking-[0.15em] text-[#888] block mb-3">Client Signals</span>
             <h2 className="text-[clamp(1.75rem,4vw,3rem)] font-extrabold tracking-tight text-[#0b0b0b]" style={{ fontFamily: 'Plus Jakarta Sans' }}>
-              Proof from <span className="italic text-[#1e4bff]">delivery</span>
+              What changed after launch.
             </h2>
           </div>
-          <div className="flex flex-wrap gap-2 md:justify-end">
-            {['Private systems', 'AI workflows', 'Ops platforms'].map((label) => (
-              <span key={label} className="rounded-full border border-[#dfe3ea] bg-white px-3.5 py-2 text-[10px] font-bold uppercase tracking-[0.14em] text-[#667085]">{label}</span>
-            ))}
-          </div>
+          <p className="text-[#666] text-sm md:text-base leading-relaxed max-w-lg">A short ledger of recent systems and the operational change each one created.</p>
         </div>
-      </div>
 
-      {/* Auto-scrolling testimonial strip with fade edges */}
-      <div ref={scrollRef} className="overflow-hidden fade-edges py-5">
-        <div className="testimonial-scroll inline-flex gap-5 md:gap-8 px-6">
-          {[...items, ...items].map((t, i) => (
-            <div key={i} data-hover className="client-signal-card flex-shrink-0 w-[calc(100vw-2rem)] sm:w-[390px] md:w-[500px] rounded-2xl md:rounded-3xl border bg-white p-5 md:p-7 relative overflow-hidden"
-              style={{ '--project-color': t.accent } as React.CSSProperties}>
-              <div className="client-signal-card-surface absolute inset-0 pointer-events-none" />
-              <div className="client-signal-card-number absolute select-none" style={{ fontFamily: 'Space Grotesk' }}>{String((i % items.length) + 1).padStart(2, '0')}</div>
-              <div className="relative z-10 flex items-start justify-between gap-4 mb-8">
-                <span className="client-signal-pill rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.16em]">{t.signal}</span>
-                <span className="client-signal-quote-mark text-[44px] md:text-[58px] leading-none font-black text-[#0b0b0b]/[0.04]" style={{ fontFamily: 'Georgia, serif' }}>&ldquo;</span>
+        <div className="outcome-ledger-list">
+          {visibleItems.map((t, i) => (
+            <article key={t.name} className="outcome-ledger-row">
+              <span className="outcome-ledger-index">{String(i + 1).padStart(2, '0')}</span>
+              <div className="outcome-ledger-project">
+                <h3>{t.name}</h3>
+                <p>{t.role}</p>
               </div>
-              <p className="client-signal-copy relative z-10 text-[#24262d] text-base md:text-xl leading-relaxed mb-8 max-w-[96%]">{t.quote}</p>
-              <div className="client-signal-footer relative z-10 flex items-center justify-between gap-4 border-t border-[#edf0f4] pt-5">
-                <div className="min-w-0">
-                  <span className="text-base md:text-lg font-black text-[#0b0b0b] block leading-tight" style={{ fontFamily: 'Plus Jakarta Sans' }}>{t.name}</span>
-                  <span className="text-xs md:text-sm text-[#7b8494]">{t.role}</span>
-                </div>
-                <div className="client-signal-initial w-11 h-11 rounded-2xl flex items-center justify-center text-sm font-black shrink-0">{t.name.charAt(0)}</div>
-              </div>
-            </div>
+              <p className="outcome-ledger-copy">{t.quote}</p>
+              <p className="outcome-ledger-result">
+                <span>{t.signal}</span>
+                <strong>{t.outcome}</strong>
+              </p>
+            </article>
           ))}
+        </div>
+
+        <div className="outcome-ledger-more">
+          <span>{expanded ? 'Showing all proof notes.' : `${hiddenCount} more proof notes available.`}</span>
+          <button type="button" onClick={() => setExpanded(value => !value)} aria-expanded={expanded}>
+            {expanded ? 'Show less' : 'Show more'}
+          </button>
         </div>
       </div>
     </section>
@@ -1124,9 +1402,9 @@ function FAQ() {
     { cat: 'Fit', q: 'What do you need from us to start?', a: 'A short product goal, target users, must-have workflows, examples of apps you like, any existing brand assets, and access to current code or tools if we are extending something. If details are unclear, we help shape the scope.' },
   ]
   return (
-    <section id="faq" className="w-full bg-[#000] py-20 md:py-28 px-4 md:px-12">
+    <section id="faq" className="w-full bg-[#000] py-14 md:py-24 px-4 md:px-12">
       <div className="max-w-4xl mx-auto">
-        <div className="reveal-up mb-12" ref={useReveal()}>
+        <div className="reveal-up mb-8 md:mb-12" ref={useReveal()}>
           <h2 className="text-[clamp(2rem,4vw,3.5rem)] font-extrabold tracking-tight text-white mb-2" style={{ fontFamily: 'Plus Jakarta Sans' }}>FAQs</h2>
           <p className="text-[#888] text-lg">Everything clients usually ask <span className="text-[#00c853] font-semibold">before we start</span></p>
         </div>
@@ -1213,37 +1491,58 @@ function Footer() {
     privacy: {
       title: 'Privacy Policy',
       updated: 'Last updated: April 24, 2026',
-      intro: 'This Privacy Policy explains how SuperNetrix collects, uses, and protects information shared through this website and project inquiry channels.',
+      intro: 'This Privacy Policy explains how SuperNetrix collects, uses, shares, stores, and protects information submitted through this website, email, social links, and project inquiry channels.',
       sections: [
-        { heading: 'Information We Collect', body: 'We may collect contact details, project notes, business requirements, and communication metadata when you email us or interact with our website.' },
-        { heading: 'How We Use Information', body: 'We use information to respond to inquiries, evaluate project fit, prepare proposals, coordinate delivery, improve our services, and maintain business records.' },
-        { heading: 'Sharing and Retention', body: 'We do not sell personal information. We may share limited information with service providers only when needed for hosting, communication, analytics, or project delivery. We retain information only as long as reasonably necessary.' },
-        { heading: 'Security', body: 'We use reasonable administrative, technical, and organizational safeguards to protect information, but no internet transmission or storage system can be guaranteed to be completely secure.' },
-        { heading: 'Contact', body: `For privacy questions, contact ${BADRI_EMAIL} or ${CORNELLEWS_EMAIL}.` },
+        { heading: 'Scope', body: 'This policy applies to visitors, prospects, clients, and partners who interact with SuperNetrix through this website, email, direct messages, calls, documents, or project collaboration channels.' },
+        { heading: 'Information We Collect', body: 'We may collect names, email addresses, social handles, company details, project notes, requirements, budgets, timelines, attachments, meeting notes, and messages you choose to share with us.' },
+        { heading: 'Technical Data', body: 'Our website or hosting providers may process basic technical data such as IP address, browser type, device information, referring pages, approximate location, pages visited, and timestamps for security, analytics, and site performance.' },
+        { heading: 'How We Use Information', body: 'We use information to respond to inquiries, evaluate project fit, prepare proposals, schedule calls, plan delivery, manage client relationships, improve our services, keep business records, and protect our website and systems.' },
+        { heading: 'Cookies and Analytics', body: 'We may use essential cookies, hosting logs, or privacy-conscious analytics to understand site performance and visitor behavior. You can control cookies through your browser settings, though some site features may work differently.' },
+        { heading: 'Sharing Information', body: 'We do not sell personal information. We may share limited information with trusted service providers for hosting, email, analytics, document collaboration, project delivery, security, accounting, legal, or operational support.' },
+        { heading: 'Client and Project Data', body: 'Project data, credentials, source files, business information, customer data, and internal materials are handled according to the relevant project agreement, access rules, and confidentiality expectations agreed with the client.' },
+        { heading: 'Retention', body: 'We keep information only as long as reasonably needed for the purposes described here, including inquiry follow-up, project delivery, business records, legal obligations, dispute prevention, security, and operational continuity.' },
+        { heading: 'Security', body: 'We use reasonable administrative, technical, and organizational safeguards designed for the size and nature of our work. No internet transmission, email, or storage system can be guaranteed to be completely secure.' },
+        { heading: 'Your Choices', body: `You can request access, correction, deletion, or restriction of information you shared with us by contacting ${BADRI_EMAIL}. We may need to verify the request and retain records where required for legitimate business or legal reasons.` },
+        { heading: 'International Visitors', body: 'If you contact us from outside India, your information may be processed in countries where we or our service providers operate. We handle such information with appropriate care for the type of data involved.' },
+        { heading: 'Children', body: 'This website and our services are intended for business users and are not directed to children. We do not knowingly collect personal information from children through this website.' },
+        { heading: 'Updates and Contact', body: `We may update this policy as our website, tools, or services evolve. For privacy questions, contact ${BADRI_EMAIL} or ${CORNELLEWS_EMAIL}.` },
       ],
     },
     terms: {
       title: 'Terms & Conditions',
       updated: 'Last updated: April 24, 2026',
-      intro: 'These Terms describe the basic rules for using this website and starting conversations with SuperNetrix about potential projects.',
+      intro: 'These Terms explain the rules for using this website, reviewing our public portfolio, and starting conversations with SuperNetrix about potential projects.',
       sections: [
-        { heading: 'Website Use', body: 'You may view and share public website content for informational purposes. You may not misuse the site, attempt unauthorized access, or interfere with its operation.' },
-        { heading: 'No Automatic Engagement', body: 'Contacting SuperNetrix does not create a client relationship, delivery obligation, exclusivity, or confidentiality commitment unless both parties sign a written agreement.' },
-        { heading: 'Project Work', body: 'Scope, pricing, timelines, ownership, confidentiality, and payment terms are handled through separate written proposals or agreements for each engagement.' },
-        { heading: 'Content Accuracy', body: 'We try to keep website content accurate, but case studies, services, availability, and descriptions may change over time. Content is provided as general information, not a guarantee of results.' },
-        { heading: 'Limitation of Liability', body: 'To the fullest extent permitted by law, SuperNetrix is not liable for indirect, incidental, special, or consequential damages arising from website use.' },
+        { heading: 'Acceptance', body: 'By using this website, sending an inquiry, or reviewing our public materials, you agree to use the site responsibly and follow these Terms. If you do not agree, please do not use the website.' },
+        { heading: 'Website Use', body: 'You may view and share public website content for informational purposes. You may not misuse the site, scrape it at scale, interfere with its operation, upload malicious content, or attempt unauthorized access.' },
+        { heading: 'No Automatic Engagement', body: 'Contacting SuperNetrix does not create a client relationship, delivery obligation, exclusivity, service-level commitment, or confidentiality obligation unless both parties sign a written agreement.' },
+        { heading: 'Project Conversations', body: 'Discovery calls, emails, estimates, and informal recommendations are for evaluation only. Final scope, timeline, pricing, milestones, acceptance criteria, and responsibilities must be documented separately.' },
+        { heading: 'Project Agreements', body: 'Each paid engagement is governed by its own proposal, statement of work, master services agreement, or written contract. If a project agreement conflicts with these Terms, the signed project agreement controls for that project.' },
+        { heading: 'Payments and Scheduling', body: 'Deposits, invoices, milestone payments, late-payment handling, refunds, change requests, and delivery schedules are defined in project-specific agreements and are not created by this website alone.' },
+        { heading: 'Intellectual Property', body: 'Website text, design, code, graphics, and brand assets belong to SuperNetrix or their respective owners. Client deliverable ownership, licenses, source access, and reusable components are handled in the relevant project agreement.' },
+        { heading: 'Confidentiality', body: 'Please do not send confidential, regulated, or sensitive information before a confidentiality agreement or project agreement is in place. If you voluntarily send materials, we will handle them carefully but no formal confidentiality duty is created by website use alone.' },
+        { heading: 'Portfolio Content', body: 'Case studies and project descriptions may summarize public work, private work, or generalized delivery patterns. Some names, metrics, details, or links may be omitted to protect confidentiality or because a project is not public.' },
+        { heading: 'Third-Party Services', body: 'This website may reference or link to third-party tools, social platforms, hosting providers, analytics providers, or client websites. We are not responsible for third-party content, policies, availability, or security practices.' },
+        { heading: 'No Warranties', body: 'Website content is provided for general information. We try to keep it accurate, but services, availability, claims, examples, and descriptions may change and are not guaranteed outcomes for future projects.' },
+        { heading: 'Liability', body: 'To the fullest extent permitted by law, SuperNetrix is not liable for indirect, incidental, special, consequential, or punitive damages arising from website use or reliance on website content.' },
+        { heading: 'Changes and Contact', body: `We may update these Terms as the website or services evolve. Questions can be sent to ${BADRI_EMAIL} or ${CORNELLEWS_EMAIL}.` },
       ],
     },
     conduct: {
       title: 'Code of Conduct',
       updated: 'Last updated: April 24, 2026',
-      intro: 'This Code of Conduct sets the collaboration standards we expect from SuperNetrix, clients, partners, and contributors.',
+      intro: 'This Code of Conduct sets the collaboration standards we expect from SuperNetrix, clients, partners, vendors, contributors, and anyone working with us on a project.',
       sections: [
-        { heading: 'Respectful Collaboration', body: 'We expect clear, professional, and respectful communication across email, calls, shared documents, and project channels.' },
-        { heading: 'Confidentiality Mindset', body: 'Project ideas, credentials, internal data, customer information, and business materials should be handled carefully and shared only with people who need access.' },
-        { heading: 'No Abuse or Harassment', body: 'Harassment, discrimination, threats, spam, abusive language, or attempts to pressure team members into unsafe work are not acceptable.' },
-        { heading: 'Responsible Technology', body: 'We do not support work intended for fraud, unlawful surveillance, unauthorized access, deceptive impersonation, or other harmful misuse.' },
-        { heading: 'Reporting Concerns', body: `Concerns can be raised directly through ${BADRI_EMAIL} or ${CORNELLEWS_EMAIL}.` },
+        { heading: 'Respectful Communication', body: 'We expect clear, professional, and respectful communication across email, calls, shared documents, chat channels, tickets, comments, and review sessions.' },
+        { heading: 'No Harassment or Abuse', body: 'Harassment, discrimination, threats, bullying, hate speech, intimidation, spam, abusive language, or retaliation against someone raising a concern is not acceptable.' },
+        { heading: 'Constructive Feedback', body: 'Feedback should be specific, actionable, and focused on the work. We avoid personal attacks, vague blame, public shaming, and pressure tactics that make collaboration unsafe or unproductive.' },
+        { heading: 'Confidentiality Mindset', body: 'Project ideas, credentials, customer data, business materials, source code, private documents, meeting recordings, and internal plans should be shared only with people who need access.' },
+        { heading: 'Credential and Access Safety', body: 'Access to repositories, cloud accounts, analytics, databases, admin portals, and AI tools should be granted with least privilege, removed when no longer needed, and never shared through unsafe channels.' },
+        { heading: 'Responsible AI and Automation', body: 'AI, automation, scraping, agents, and analytics systems should be used transparently and lawfully. We do not support deceptive impersonation, fraud, unlawful surveillance, unauthorized access, or harmful misuse.' },
+        { heading: 'Client Data and User Trust', body: 'When projects involve user data, call recordings, images, payments, location, health, finance, or workplace monitoring, we expect extra care around consent, security, retention, access control, and auditability.' },
+        { heading: 'Scope and Availability', body: 'We respect agreed working hours, response expectations, milestones, and escalation paths. Urgent work, weekend work, or major changes should be discussed clearly rather than assumed.' },
+        { heading: 'Quality and Honesty', body: 'We aim to communicate risks early, avoid overstating what is shipped, document meaningful decisions, and make limitations visible before they become delivery or trust problems.' },
+        { heading: 'Reporting Concerns', body: `Concerns can be raised directly through ${BADRI_EMAIL} or ${CORNELLEWS_EMAIL}. We will review concerns in good faith and take reasonable steps to address confirmed issues.` },
       ],
     },
   }
@@ -1252,19 +1551,20 @@ function Footer() {
     { href: INSTAGRAM_URL, label: 'Instagram', icon: <InstagramIcon /> },
     { href: THREADS_URL, label: 'Threads', icon: <ThreadsIcon /> },
   ]
-  const legalLinks: Array<[keyof typeof legalDocs, string]> = [
-    ['privacy', 'Privacy Policy'],
-    ['terms', 'Terms & Conditions'],
-    ['conduct', 'Code of Conduct'],
+  const legalLinks: Array<{ key: keyof typeof legalDocs; label: string; note: string }> = [
+    { key: 'privacy', label: 'Privacy Policy', note: 'How inquiry data is handled' },
+    { key: 'terms', label: 'Terms & Conditions', note: 'Website and project conversation terms' },
+    { key: 'conduct', label: 'Code of Conduct', note: 'How we collaborate with clients' },
   ]
 
   useEffect(() => {
     if (!legalOpen) return
+    const previousBodyOverflow = document.body.style.overflow
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setLegalOpen(null) }
     document.body.style.overflow = 'hidden'
     window.addEventListener('keydown', onKey)
     return () => {
-      document.body.style.overflow = ''
+      document.body.style.overflow = previousBodyOverflow
       window.removeEventListener('keydown', onKey)
     }
   }, [legalOpen])
@@ -1297,7 +1597,12 @@ function Footer() {
           {/* Col 1: About card */}
           <div className="lg:col-span-2 bg-[#f8f8f8] rounded-2xl p-6 md:p-8">
             <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#00c853] block mb-3">Designed & Developed By</span>
-            <h3 className="text-2xl md:text-3xl font-black text-[#0b0b0b] mb-3" style={{ fontFamily: 'Plus Jakarta Sans' }}>SuperNetrix</h3>
+            <div className="mb-3 flex items-center gap-3">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#e9edf2] bg-white">
+                <BrandMark className="h-6 w-6" />
+              </span>
+              <h3 className="text-2xl md:text-3xl font-black text-[#0b0b0b]" style={{ fontFamily: 'Plus Jakarta Sans' }}>SuperNetrix</h3>
+            </div>
             <p className="text-[#777] text-sm leading-relaxed max-w-sm">Strategic Technology Partner crafting high-impact digital experiences for startups and enterprises.</p>
             <p className="text-[#aaa] text-xs mt-4">Based globally. Building remotely.</p>
           </div>
@@ -1315,9 +1620,23 @@ function Footer() {
           {/* Col 3: Legal */}
           <div>
             <span className="text-xs font-bold uppercase tracking-[0.15em] text-[#999] mb-5 block">Legal</span>
-            <nav className="flex flex-col gap-3">
-              {legalLinks.map(([key, label]) => (
-                <button key={key} type="button" onClick={() => setLegalOpen(key)} data-hover className="text-sm font-medium text-[#444] hover:text-[#00c853] transition-colors inline-block w-fit text-left">{label}</button>
+            <nav className="flex flex-col gap-2.5">
+              {legalLinks.map((item) => (
+                <button
+                  key={item.key}
+                  type="button"
+                  onClick={() => setLegalOpen(item.key)}
+                  data-hover
+                  className="group rounded-2xl border border-[#eceff3] bg-[#fbfbfc] px-3.5 py-3 text-left transition-all duration-300 hover:border-[#0b0b0b] hover:bg-white"
+                >
+                  <span className="flex items-start justify-between gap-3">
+                    <span>
+                      <span className="block text-sm font-bold text-[#1f2228] leading-tight">{item.label}</span>
+                      <span className="mt-1 block text-[11px] leading-snug text-[#8b95a5]">{item.note}</span>
+                    </span>
+                    <span className="mt-0.5 text-[#a3adbb] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:text-[#0b0b0b]">↗</span>
+                  </span>
+                </button>
               ))}
             </nav>
           </div>
@@ -1352,27 +1671,39 @@ function Footer() {
       {legalOpen && (() => {
         const doc = legalDocs[legalOpen]
         return (
-          <div className="fixed inset-0 z-[300] flex items-center justify-center p-4" onClick={() => setLegalOpen(null)}>
-            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
-            <div className="relative z-10 w-full max-w-3xl max-h-[88vh] overflow-y-auto rounded-3xl bg-white shadow-2xl" role="dialog" aria-modal="true" aria-labelledby={`legal-${legalOpen}-title`} onClick={e => e.stopPropagation()}>
-              <div className="sticky top-0 bg-white/90 backdrop-blur-xl border-b border-[#eee] px-6 md:px-8 py-5 flex items-start justify-between gap-4">
-                <div>
-                  <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853]">{doc.updated}</span>
-                  <h3 id={`legal-${legalOpen}-title`} className="text-2xl md:text-4xl font-black text-[#0b0b0b] mt-2" style={{ fontFamily: 'Plus Jakarta Sans' }}>{doc.title}</h3>
-                </div>
-                <button type="button" onClick={() => setLegalOpen(null)} className="w-10 h-10 rounded-full bg-[#f4f4f4] flex items-center justify-center hover:bg-[#0b0b0b] hover:text-white transition-colors shrink-0" aria-label="Close legal popup">
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+          <div className="legal-modal-overlay fixed inset-0 z-[300] overflow-y-auto scrollbar-hide p-3 md:p-6" onClick={() => setLegalOpen(null)}>
+            <div className="fixed inset-0 bg-[#0b0b0b]/55 backdrop-blur-md" />
+            <div className="legal-modal-panel relative z-10 mx-auto my-4 md:my-8 w-full max-w-4xl overflow-hidden rounded-[1.35rem] md:rounded-[2rem] border border-white/30 bg-white shadow-[0_30px_100px_rgba(0,0,0,0.28)]" role="dialog" aria-modal="true" aria-labelledby={`legal-${legalOpen}-title`} onClick={e => e.stopPropagation()}>
+              <div className="relative border-b border-[#e9edf3] bg-white px-5 pb-5 pt-6 md:px-8 md:pb-7 md:pt-8">
+                <button type="button" onClick={() => setLegalOpen(null)} className="absolute right-4 top-4 flex h-11 w-11 items-center justify-center rounded-full border border-[#e5e8ef] bg-white text-[#0b0b0b] transition-colors hover:bg-[#0b0b0b] hover:text-white md:right-6 md:top-6" aria-label="Close legal popup">
+                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
+                <div className="pr-14">
+                  <span className="block text-[10px] font-black uppercase tracking-[0.2em] text-[#8b95a5]">SuperNetrix Legal</span>
+                  <h3 id={`legal-${legalOpen}-title`} className="mt-3 text-[2rem] font-black leading-[0.98] tracking-tight text-[#0b0b0b] md:text-5xl" style={{ fontFamily: 'Plus Jakarta Sans' }}>{doc.title}</h3>
+                  <p className="mt-4 max-w-2xl text-[0.98rem] leading-relaxed text-[#5f6673] md:mt-5 md:text-lg">{doc.intro}</p>
+                  <span className="mt-4 inline-flex rounded-full border border-[#edf0f4] bg-[#fafbfc] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.13em] text-[#8b95a5]">{doc.updated}</span>
+                </div>
               </div>
-              <div className="px-6 md:px-8 py-7 md:py-8">
-                <p className="text-[#666] text-sm md:text-base leading-relaxed mb-8 max-w-2xl">{doc.intro}</p>
-                <div className="space-y-6">
-                  {doc.sections.map(section => (
-                    <section key={section.heading} className="border-l-2 border-[#00c853] pl-4">
-                      <h4 className="text-base md:text-lg font-bold text-[#0b0b0b] mb-2" style={{ fontFamily: 'Plus Jakarta Sans' }}>{section.heading}</h4>
-                      <p className="text-sm text-[#666] leading-relaxed">{section.body}</p>
+
+              <div className="px-4 py-4 md:px-8 md:py-7">
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
+                  {doc.sections.map((section, i) => (
+                    <section key={section.heading} className="rounded-[1.1rem] border border-[#e8ecf2] bg-[#fdfdfd] p-4 md:p-5">
+                      <div className="mb-3 flex items-start gap-3">
+                        <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#f2f4f7] text-[11px] font-black text-[#7b8494]" style={{ fontFamily: 'Space Grotesk' }}>{String(i + 1).padStart(2, '0')}</span>
+                        <h4 className="text-[1rem] font-black leading-tight text-[#0b0b0b] md:text-lg" style={{ fontFamily: 'Plus Jakarta Sans' }}>{section.heading}</h4>
+                      </div>
+                      <p className="text-[0.9rem] leading-relaxed text-[#5f6673] md:text-sm">{section.body}</p>
                     </section>
                   ))}
+                </div>
+              </div>
+
+              <div className="border-t border-[#e9edf3] bg-[#fafbfc] px-5 py-4 md:px-8">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <p className="max-w-xl text-xs leading-relaxed text-[#7b8494]">Questions about these terms can be sent to <a className="font-bold text-[#0b0b0b] hover:text-[#00c853]" href={`mailto:${BADRI_EMAIL}`}>{BADRI_EMAIL}</a>.</p>
+                  <button type="button" onClick={() => setLegalOpen(null)} className="inline-flex h-10 w-fit items-center justify-center rounded-full border border-[#e1e5eb] bg-white px-5 text-xs font-bold text-[#0b0b0b] transition-colors hover:border-[#0b0b0b]">Done</button>
                 </div>
               </div>
             </div>

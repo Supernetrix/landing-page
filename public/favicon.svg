@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="SuperNetrix">
+  <rect width="64" height="64" rx="14" fill="#ffffff"/>
+  <g fill="#050505" transform="translate(9 8)">
+    <path d="M10 0h12l6 6-8 8H8L0 6z"/>
+    <path d="M24 3h14L17 25 8 16z"/>
+    <path d="M4 26 18 12v22L9 43z"/>
+    <path d="M18 38 37 19l9 9-20 20z"/>
+    <path d="M34 33 48 47 37 58 28 49V40z"/>
+    <path d="M43 30 56 43 45 54 34 43z"/>
+  </g>
+</svg>

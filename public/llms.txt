@@ -1,0 +1,34 @@
+# SuperNetrix
+
+SuperNetrix is a software development agency building SaaS platforms, AI automation systems, mobile apps, web applications, admin portals, dashboards, CRM workflows, and automation for startups, SMEs, and growing teams worldwide.
+
+## Services
+
+- SaaS platform development
+- AI workflow automation
+- Mobile app development
+- Web application development
+- Backend API development
+- Admin portals and dashboards
+- CRM and workflow systems
+- Cloud deployment and launch support
+
+## Featured Work
+
+- MoneyOS: finance operating system
+- Breyus: B2B trade platform
+- Di-Twin API: health platform backend
+- Onsite: construction collaboration platform
+- EverKind AI UGC: AI content pipeline
+- GG Krishi: WhatsApp MRV and AI image validation workflow
+- SiteSales AI: construction sales intelligence platform
+- PowerBlog: SEO publishing platform
+- Digital Twin: enterprise data visualization
+- VoiceGuard AI: call analytics platform
+
+## Contact
+
+Project inquiries: badri.supernetrix@gmail.com
+Business inquiries: cornellews.supernetrix@gmail.com
+Instagram: https://www.instagram.com/supernetrix
+Threads: https://www.threads.com/@supernetrix
